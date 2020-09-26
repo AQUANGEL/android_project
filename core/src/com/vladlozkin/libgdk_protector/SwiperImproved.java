@@ -9,12 +9,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
 import java.util.Vector;
+
+import com.vladlozkin.libgdk_protector.BalloonImpl.*;
 
 
 public class SwiperImproved implements ApplicationListener {
@@ -27,10 +30,14 @@ public class SwiperImproved implements ApplicationListener {
 	public static Texture backgroundTexture;
 	public static Sprite backgroundSprite;
 	private SpriteBatch spriteBatch;
+
 	Random rand = new Random();
-	Vector balloons = new Vector<Balloon>();
-	Balloon balloon;
-	private final int MAX_NUM_OF_BALLOONS = 2;
+	Vector balloons = new Vector<IEnemyUpdate>();
+	IEnemyUpdate enemy;
+	private final int MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS = 1;
+	private final int MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS = 1;
+	BitmapFont scoreText;
+
 
 
 	@Override
@@ -44,17 +51,50 @@ public class SwiperImproved implements ApplicationListener {
 
 		//attach event Listener class
 		Gdx.input.setInputProcessor(swipe);
+
+		scoreText = new BitmapFont(); //or use alex answer to use custom font
+		scoreText.setColor(255.0f, 255.0f, 255.0f, 255.0f);
+		scoreText.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		scoreText.getData().setScale(8);
+
+		Thread enemyDispatchThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true)
+				{
+					try {
+						for (Object balloonIter : balloons) {
+							Thread.sleep(700);
+							enemy = (IEnemyUpdate) balloonIter;
+							if (enemy.Visible() == false) {
+								int newX = rand.nextInt(Gdx.graphics.getWidth());
+								int newY = rand.nextInt(Gdx.graphics.getHeight());
+								enemy.SetNewPosition(newX, newY);
+								enemy.Show();
+							}
+						}
+					}
+					catch (Exception e)
+					{
+					}
+				}
+			}
+		});
+		enemyDispatchThread.start();
 	}
 
 	private void loadTextures() {
 		spriteBatch = new SpriteBatch();
 		backgroundTexture = new Texture("farmResized.png");
 		backgroundSprite = new Sprite(backgroundTexture);
-		for(int i = 0; i < MAX_NUM_OF_BALLOONS; i++)
+		for(int i = 0; i < MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS; i++)
 		{
-			int startX = rand.nextInt(Gdx.graphics.getWidth());
-			int startY = rand.nextInt(Gdx.graphics.getHeight());
-			balloons.add(new Balloon(startX,startY));
+			balloons.add(new BalloonRightToLeft());
+		}
+
+		for(int i = 0; i < MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS; i++)
+		{
+			balloons.add(new BalloonLeftToRight());
 		}
 	}
 
@@ -95,6 +135,7 @@ public class SwiperImproved implements ApplicationListener {
 		spriteBatch.begin();
 		renderBackground();
 		renderEnemys();
+		scoreText.draw(spriteBatch, "Score: 25 ", Gdx.graphics.getWidth() - 620,  Gdx.graphics.getHeight() - 200, 500, 0, true);
 		spriteBatch.end();
 
 		renderSwipe();
@@ -104,13 +145,13 @@ public class SwiperImproved implements ApplicationListener {
 
 	private void renderEnemys()
 	{
-		for(Object balloonIter : balloons)
+		for(Object enemyIter : balloons)
 		{
-			balloon = (Balloon) balloonIter;
-			if (balloon.DrawMe())
+			enemy = (IEnemyUpdate) enemyIter;
+			if (enemy.Visible())
 			{
-				balloon.draw(spriteBatch);
-				balloon.update(0.2f);
+				enemy.Move();
+				enemy.Draw(spriteBatch);
 			}
 		}
 	}
@@ -133,11 +174,11 @@ public class SwiperImproved implements ApplicationListener {
 	{
 		for(Vector2 point : swipe.path())
 		{
-			for(Object balloonIter : balloons)
+			for(Object enemyIter : balloons)
 			{
-				balloon = (Balloon) balloonIter;
-				if(balloon.getBound().contains(point.x,point.y)){
-					balloon.HideTexture();
+				enemy = (IEnemyUpdate) enemyIter;
+				if(enemy.GetBound().contains(point.x,point.y)){
+					enemy.Hide();
 				}
 			}
 		}
