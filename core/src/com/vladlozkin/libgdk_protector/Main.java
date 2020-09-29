@@ -17,10 +17,10 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
 import java.util.Vector;
 
-import com.vladlozkin.libgdk_protector.BalloonImpl.*;
+import com.vladlozkin.libgdk_protector.MissileImpl.MissileUpTrajectory;
 
 
-public class SwiperImproved implements ApplicationListener {
+public class Main implements ApplicationListener {
 	OrthographicCamera cam;
 	SpriteBatch batch;
 	SwipeHandler swipe;
@@ -32,11 +32,20 @@ public class SwiperImproved implements ApplicationListener {
 	private SpriteBatch spriteBatch;
 
 	Random rand = new Random();
-	Vector balloons = new Vector<IEnemyUpdate>();
+	Vector enemys = new Vector<IEnemyUpdate>();
 	IEnemyUpdate enemy;
 	private final int MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS = 1;
 	private final int MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS = 1;
 	BitmapFont scoreText;
+	IActionResolver actionResolver;
+
+	public static boolean showLoginScreen = true;
+	public static boolean showLeaderBoard = false;
+
+	public Main(IActionResolver actionResolver)
+	{
+		this.actionResolver = actionResolver;
+	}
 
 
 
@@ -63,13 +72,11 @@ public class SwiperImproved implements ApplicationListener {
 				while(true)
 				{
 					try {
-						for (Object balloonIter : balloons) {
+						for (Object enemyIter : enemys) {
 							Thread.sleep(700);
-							enemy = (IEnemyUpdate) balloonIter;
+							enemy = (IEnemyUpdate) enemyIter;
 							if (enemy.Visible() == false) {
-								int newX = rand.nextInt(Gdx.graphics.getWidth());
-								int newY = rand.nextInt(Gdx.graphics.getHeight());
-								enemy.SetNewPosition(newX, newY);
+								enemy.SetNewPosition();
 								enemy.Show();
 							}
 						}
@@ -87,14 +94,24 @@ public class SwiperImproved implements ApplicationListener {
 		spriteBatch = new SpriteBatch();
 		backgroundTexture = new Texture("farmResized.png");
 		backgroundSprite = new Sprite(backgroundTexture);
-		for(int i = 0; i < MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS; i++)
-		{
-			balloons.add(new BalloonRightToLeft());
-		}
+//		for(int i = 0; i < MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS; i++)
+//		{
+//			enemys.add(new BalloonRightToLeft());
+//		}
+//
+//		for(int i = 0; i < MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS; i++)
+//		{
+//			enemys.add(new BalloonLeftToRight());
+//		}
 
-		for(int i = 0; i < MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS; i++)
+//		for(int i = 0; i < 1; i++)
+//		{
+//			enemys.add(new MissileDownTrajectory());
+//		}
+
+		for(int i = 0; i < 2; i++)
 		{
-			balloons.add(new BalloonLeftToRight());
+			enemys.add(new MissileUpTrajectory());
 		}
 	}
 
@@ -128,24 +145,41 @@ public class SwiperImproved implements ApplicationListener {
 
 	@Override
 	public void render() {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if (showLoginScreen)
+		{
+			actionResolver.ShowMainMenu();
+			showLoginScreen = false;
+//			showLeaderBoard = true;  //TODO:: remove from here, just for testing
+		}
+		else
+		{
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-		spriteBatch.begin();
-		renderBackground();
-		renderEnemys();
-		scoreText.draw(spriteBatch, "Score: 25 ", Gdx.graphics.getWidth() - 620,  Gdx.graphics.getHeight() - 200, 500, 0, true);
-		spriteBatch.end();
+			spriteBatch.begin();
+			renderBackground();
+			renderEnemys();
+			scoreText.draw(spriteBatch, "Score: 25 ", Gdx.graphics.getWidth() - 620,  Gdx.graphics.getHeight() - 200, 500, 0, true);
+			spriteBatch.end();
 
-		renderSwipe();
-		handleSwipeOutcome();
+			renderSwipe();
+			handleSwipeOutcome();
+			// TODO:: add check of score or time elapsed or life etc.. ,
+			// TODO:: then call the leader board activity
+			if(showLeaderBoard)
+			{
+				actionResolver.ShowLeaderBoard();
+				showLeaderBoard  = false;
+			}
+		}
+
 	}
 
 
 	private void renderEnemys()
 	{
-		for(Object enemyIter : balloons)
+		for(Object enemyIter : enemys)
 		{
 			enemy = (IEnemyUpdate) enemyIter;
 			if (enemy.Visible())
@@ -174,7 +208,7 @@ public class SwiperImproved implements ApplicationListener {
 	{
 		for(Vector2 point : swipe.path())
 		{
-			for(Object enemyIter : balloons)
+			for(Object enemyIter : enemys)
 			{
 				enemy = (IEnemyUpdate) enemyIter;
 				if(enemy.GetBound().contains(point.x,point.y)){

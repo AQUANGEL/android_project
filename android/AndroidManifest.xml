@@ -19,6 +19,14 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.vladlozkin.libgdk_protector.WelcomeActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.vladlozkin.libgdk_protector.LeaderBoardActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

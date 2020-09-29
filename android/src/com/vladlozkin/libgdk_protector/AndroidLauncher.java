@@ -10,6 +10,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new SwiperImproved(), config);
+		ActionResolverAndroid actionResolverAndroid = new ActionResolverAndroid(this);
+		initialize(new Main(actionResolverAndroid), config);
 	}
 }
