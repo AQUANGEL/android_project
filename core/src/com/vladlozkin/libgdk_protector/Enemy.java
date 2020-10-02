@@ -51,6 +51,10 @@ public class Enemy {
         return texture;
     }
 
+    public int score() { return 10; }
+
+    public boolean isShouldDraw() { return this.shouldDraw; }
+
     public void draw(SpriteBatch spriteBatch){
         spriteBatch.draw(textureRegion, bound.x, bound.y, bound.getWidth()/2, bound.getHeight()/2, texture.getWidth(), texture.getHeight(), 0.5f,0.5f, 0);
 //        spriteBatch.draw(texture, bound.x, bound.y, texture.getWidth()/1.5f, texture.getHeight()/1.5f);

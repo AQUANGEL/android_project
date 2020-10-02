@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
 import java.util.Vector;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.vladlozkin.libgdk_protector.MissileImpl.MissileUpTrajectory;
 
 
@@ -36,8 +37,12 @@ public class Main implements ApplicationListener {
 	IEnemyUpdate enemy;
 	private final int MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS = 1;
 	private final int MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS = 1;
-	BitmapFont scoreText;
 	IActionResolver actionResolver;
+
+	private int score = 0;
+	Label scoreText;
+	Label.LabelStyle scoreTextStyle;
+	BitmapFont scoreFont;
 
 	public static boolean showLoginScreen = true;
 	public static boolean showLeaderBoard = false;
@@ -61,10 +66,14 @@ public class Main implements ApplicationListener {
 		//attach event Listener class
 		Gdx.input.setInputProcessor(swipe);
 
-		scoreText = new BitmapFont(); //or use alex answer to use custom font
-		scoreText.setColor(255.0f, 255.0f, 255.0f, 255.0f);
-		scoreText.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		scoreText.getData().setScale(8);
+		scoreFont = new BitmapFont();
+		scoreFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		scoreTextStyle = new Label.LabelStyle();
+		scoreTextStyle.font = scoreFont;
+
+		scoreText = new Label("Score: 0",scoreTextStyle);
+		scoreText.setBounds(32, 32,200,100);
+		scoreText.setFontScale(4f,4f);
 
 		Thread enemyDispatchThread = new Thread(new Runnable() {
 			@Override
@@ -160,7 +169,7 @@ public class Main implements ApplicationListener {
 			spriteBatch.begin();
 			renderBackground();
 			renderEnemys();
-			scoreText.draw(spriteBatch, "Score: 25 ", Gdx.graphics.getWidth() - 620,  Gdx.graphics.getHeight() - 200, 500, 0, true);
+			scoreText.draw(spriteBatch, (float) 1.0);
 			spriteBatch.end();
 
 			renderSwipe();
@@ -176,6 +185,11 @@ public class Main implements ApplicationListener {
 
 	}
 
+	private void updateScore(int toAdd) {
+		this.score += toAdd;
+
+		scoreText.setText("Score: " + this.score);
+	}
 
 	private void renderEnemys()
 	{
@@ -212,7 +226,10 @@ public class Main implements ApplicationListener {
 			{
 				enemy = (IEnemyUpdate) enemyIter;
 				if(enemy.GetBound().contains(point.x,point.y)){
-					enemy.Hide();
+					if (enemy.isShouldDraw()) {
+						updateScore(enemy.score());
+						enemy.Hide();
+					}
 				}
 			}
 		}
