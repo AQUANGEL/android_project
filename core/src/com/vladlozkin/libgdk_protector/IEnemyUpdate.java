@@ -10,5 +10,6 @@ public interface IEnemyUpdate {
     void Move();
     void Draw(SpriteBatch spriteBatch);
     void SetNewPosition();
+    void ShowImpact();
     Rectangle GetBound();
 }
