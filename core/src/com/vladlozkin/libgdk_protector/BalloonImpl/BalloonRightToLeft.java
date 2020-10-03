@@ -1,6 +1,7 @@
 package com.vladlozkin.libgdk_protector.BalloonImpl;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.vladlozkin.libgdk_protector.Enemy;
@@ -12,22 +13,30 @@ public class BalloonRightToLeft extends Enemy implements IEnemyUpdate {
 
     private final float FIRST_LEVEL_MAX_DELTA = 0.1f;
     private float weight = 10;
-    Random rand;
+    Random rand = new Random(100);
 
     public BalloonRightToLeft() {
-        super( 0, Gdx.graphics.getHeight(), "ballon.png");
-        rand = new Random(100);
+        super( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight(), "ballon.png");
+
+
     }
 
     public void Move(){
+        if(shouldMove == false)
+        {
+            return;
+        }
+        if (!super.getScreenRectangel().contains( super.getBound()))
+        {
+            super.ShowImpact();
+            shouldMove = false;
+        }
+
         float delta = rand.nextFloat() * FIRST_LEVEL_MAX_DELTA + 0.2f;
         super.getBound().x += weight*(delta*2);
         super.getBound().y -= weight*(delta/2);
 
-        if (!super.getScreenRectangel().contains( super.getBound()))
-        {
-            super.HideEnemy();
-        }
+
     }
 
     public boolean Visible(){
