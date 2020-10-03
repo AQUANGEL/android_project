@@ -1,6 +1,7 @@
 package com.vladlozkin.libgdk_protector.MissileImpl;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -16,6 +17,8 @@ public class MissileUpTrajectory extends Enemy implements IEnemyUpdate
     protected TextureRegion textureRegion;
     float velocityX = 10f;
     float velocityY = 16f;
+    Sound sound = Gdx.audio.newSound(Gdx.files.internal("grad.wav"));
+
 
 
     public MissileUpTrajectory() {
@@ -70,6 +73,7 @@ public class MissileUpTrajectory extends Enemy implements IEnemyUpdate
         velocityX = 10f;
         velocityY = 16f;
         bound.setCenter(newX, newY);
+//        sound.play(0.3f);
     }
 
 

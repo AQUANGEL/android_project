@@ -29,6 +29,7 @@ public class BalloonLeftToRight extends Enemy implements IEnemyUpdate {
         if (!super.getScreenRectangel().contains( super.getBound()))
         {
             super.HideEnemy();
+            System.out.println("ENEMY IS OUT OF THE SCREEN");
         }
     }
 

@@ -14,11 +14,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.LinkedList;
 import java.util.Random;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.vladlozkin.libgdk_protector.MissileImpl.MissileUpTrajectory;
+import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonRightToLeft;
 
 
 public class Main implements ApplicationListener {
@@ -33,9 +35,12 @@ public class Main implements ApplicationListener {
 	private SpriteBatch spriteBatch;
 
 	Random rand = new Random();
-	Vector enemys = new Vector<IEnemyUpdate>();
+	CopyOnWriteArrayList enemysToDraw = new CopyOnWriteArrayList<IEnemyUpdate>();
+	CopyOnWriteArrayList enemysWaitingList = new CopyOnWriteArrayList<IEnemyUpdate>();
+	IEnemyUpdate enemyInWaitingList;
+	IEnemyUpdate enemyInToDrawList;
 	IEnemyUpdate enemy;
-	private final int MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS = 1;
+	private final int MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS = 3;
 	private final int MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS = 1;
 	IActionResolver actionResolver;
 
@@ -75,23 +80,49 @@ public class Main implements ApplicationListener {
 		scoreText.setBounds(32, 32,200,100);
 		scoreText.setFontScale(4f,4f);
 
+		Thread enemyDispatchThread2 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true)
+				{
+					try {
+						Thread.sleep(3000);
+						if(!enemysWaitingList.isEmpty())
+						{
+							enemyInWaitingList = (IEnemyUpdate) enemysWaitingList.remove(0);
+							enemysToDraw.add(enemyInWaitingList);
+						}
+					}
+					catch (Exception e)
+					{
+					}
+				}
+			}
+		});
+		enemyDispatchThread2.start();
+
 		Thread enemyDispatchThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while(true)
 				{
 					try {
-						for (Object enemyIter : enemys) {
-							Thread.sleep(700);
-							enemy = (IEnemyUpdate) enemyIter;
-							if (enemy.Visible() == false) {
-								enemy.SetNewPosition();
-								enemy.Show();
+						LinkedList itemsToRemove = (LinkedList<IEnemyUpdate>) enemysToDraw.clone();
+						for (Object iter : enemysToDraw) {
+							Thread.sleep(1500);
+							enemyInToDrawList = (IEnemyUpdate) iter;
+							if (enemyInToDrawList.Visible() == false) {
+								enemyInToDrawList.SetNewPosition();
+								enemyInToDrawList.Show();
+								enemysWaitingList.add(enemyInToDrawList);
+								itemsToRemove.add(enemyInToDrawList);
 							}
 						}
+						enemysToDraw.removeAll(itemsToRemove);
 					}
 					catch (Exception e)
 					{
+						e.printStackTrace();
 					}
 				}
 			}
@@ -103,10 +134,10 @@ public class Main implements ApplicationListener {
 		spriteBatch = new SpriteBatch();
 		backgroundTexture = new Texture("farmResized.png");
 		backgroundSprite = new Sprite(backgroundTexture);
-//		for(int i = 0; i < MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS; i++)
-//		{
-//			enemys.add(new BalloonRightToLeft());
-//		}
+		for(int i = 0; i < MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS; i++)
+		{
+			enemysWaitingList.add(new BalloonRightToLeft());
+		}
 //
 //		for(int i = 0; i < MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS; i++)
 //		{
@@ -118,10 +149,10 @@ public class Main implements ApplicationListener {
 //			enemys.add(new MissileDownTrajectory());
 //		}
 
-		for(int i = 0; i < 2; i++)
-		{
-			enemys.add(new MissileUpTrajectory());
-		}
+//		for(int i = 0; i < 2; i++)
+//		{
+//			enemys.add(new MissileUpTrajectory());
+//		}
 	}
 
 	private void swiperInit()
@@ -175,7 +206,7 @@ public class Main implements ApplicationListener {
 			renderSwipe();
 			handleSwipeOutcome();
 			// TODO:: add check of score or time elapsed or life etc.. ,
-			// TODO:: then call the leader board activity
+			// TODO:: set showLeaderBoard to true when needed
 			if(showLeaderBoard)
 			{
 				actionResolver.ShowLeaderBoard();
@@ -193,7 +224,7 @@ public class Main implements ApplicationListener {
 
 	private void renderEnemys()
 	{
-		for(Object enemyIter : enemys)
+		for(Object enemyIter : enemysToDraw)
 		{
 			enemy = (IEnemyUpdate) enemyIter;
 			if (enemy.Visible())
@@ -222,13 +253,14 @@ public class Main implements ApplicationListener {
 	{
 		for(Vector2 point : swipe.path())
 		{
-			for(Object enemyIter : enemys)
+			for(Object enemyIter : enemysToDraw)
 			{
 				enemy = (IEnemyUpdate) enemyIter;
 				if(enemy.GetBound().contains(point.x,point.y)){
 					if (enemy.isShouldDraw()) {
 						updateScore(enemy.score());
 						enemy.Hide();
+						System.out.println("ENEMY GOT DESTRUCTED FROM SWIPE");
 					}
 				}
 			}
@@ -239,7 +271,6 @@ public class Main implements ApplicationListener {
 	public void resize(int width, int height) {
 		cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
-
 
 	@Override
 	public void pause() {
