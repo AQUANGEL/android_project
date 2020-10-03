@@ -3,4 +3,8 @@
     <string name="app_name">מגן</string>
     <string name="oteff_protector">מגן העוטף</string>
     <string name="start_game">התחל משחק</string>
+    <string name="leader_board">לוח תוצאות</string>
+    <string name="rank">דירוג</string>
+    <string name="name">שם השחקן</string>
+    <string name="score">תוצאה</string>
 </resources>

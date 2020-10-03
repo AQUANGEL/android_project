@@ -4,5 +4,9 @@
     <string name="app_name">Protector</string>
     <string name="oteff_protector">Oteff Protector</string>
     <string name="start_game">Start Game</string>
+    <string name="leader_board">Leader Board</string>
+    <string name="rank">Rank</string>
+    <string name="name">Player Name</string>
+    <string name="score">Score</string>
 
 </resources>
