@@ -13,14 +13,14 @@ class ScoreListAdapter (private val context: Activity, private val scores: Array
         val rowView = inflater.inflate(R.layout.score_list, null, true)
 
         val rank = rowView.findViewById(R.id.rank) as TextView
-        val user_name = rowView.findViewById(R.id.name) as TextView
+        val userName = rowView.findViewById(R.id.name) as TextView
         val score = rowView.findViewById(R.id.score) as TextView
 
-        val score_obj = scores[position]
+        val scoreObj = scores[position]
 
         rank.text = position.toString()
-        user_name.text = score_obj.user_name
-        score.text = score_obj.score.toString()
+        userName.text = scoreObj.user_name
+        score.text = scoreObj.score.toString()
 
         return rowView
     }

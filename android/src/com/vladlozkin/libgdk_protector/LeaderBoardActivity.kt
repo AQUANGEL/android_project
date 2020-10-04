@@ -17,9 +17,10 @@ class LeaderBoardActivity : Activity() {
         val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java,
                                 "database-name").build()
 
-        val scores = db.scoreDao().getAll()
+        val scores = db.scoreDao().getAll().sortedByDescending { it.score }.toTypedArray()
 
-
+        val myListAdapter = ScoreListAdapter(this, scores)
+        scoreList.adapter = myListAdapter
     }
 
     override fun onBackPressed() {}
