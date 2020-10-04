@@ -17,7 +17,8 @@ class LeaderBoardActivity : Activity() {
         val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java,
                                 "database-name").build()
 
-        
+        val scores = db.scoreDao().getAll()
+
 
     }
 
