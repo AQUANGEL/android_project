@@ -64,12 +64,14 @@ project(":android") {
 
 project(":core") {
     apply plugin: "java-library"
-
+    apply plugin: 'kotlin'
+    apply plugin: 'kotlin-kapt'
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+
         
     }
 }

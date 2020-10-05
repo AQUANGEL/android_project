@@ -212,7 +212,7 @@ public class Main implements ApplicationListener {
 	}
 
 	private void createSecondLevel() {
-		backgroundTexture = new Texture("nirAm.jpg");
+		backgroundTexture = new Texture("black.png");
 		backgroundSprite = new Sprite(backgroundTexture);
 
 		nofLeftEnemies = 1; //this will never stop
@@ -262,7 +262,7 @@ public class Main implements ApplicationListener {
 			handleSwipeOutcome();
 			// TODO:: add check of score or time elapsed or life etc.. ,
 			// TODO:: set showLeaderBoard to true when needed
-			if(nofLeftEnemies == 0)
+			if(nofLeftEnemies <= 0)
 			{
 //				actionResolver.ShowLeaderBoard();
 				m_CurrentLevel++;
@@ -276,7 +276,6 @@ public class Main implements ApplicationListener {
 
 	private void updateScore(int toAdd) {
 		this.score += toAdd;
-
 		scoreText.setText("Score: " + this.score);
 	}
 
@@ -320,16 +319,16 @@ public class Main implements ApplicationListener {
 
 	private void handleSwipeOutcome()
 	{
-		for(Vector2 point : swipe.path())
+		for(Object enemyIter : m_EnemysToDraw)
 		{
-			for(Object enemyIter : m_EnemysToDraw)
+			enemy = (IEnemyUpdate) enemyIter;
+			for(Vector2 point : swipe.path())
 			{
-				enemy = (IEnemyUpdate) enemyIter;
 				if(enemy.GetBound().contains(point.x,point.y) && !enemy.TouchedGround()){
-					enemy.Hide();
+					m_EnemysToDraw.remove(enemy);
 					nofLeftEnemies--;
 					updateScore(enemy.score());
-
+					break;
 				}
 			}
 		}
