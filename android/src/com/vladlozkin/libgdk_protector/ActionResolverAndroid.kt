@@ -22,9 +22,10 @@ class ActionResolverAndroid(context: Context) : Activity(), IActionResolver {
         }
     }
 
-    override fun ShowLeaderBoard() {
+    override fun ShowLeaderBoard(score: Int) {
         m_handler.post {
             val intent = Intent(m_context, LeaderBoardActivity::class.java)
+            intent.putExtra("score",score)
             if (m_context is Activity) {
                 (m_context as Activity).startActivityForResult(intent, LEADER_BOARD_CODE)
             } else {

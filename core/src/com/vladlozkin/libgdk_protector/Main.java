@@ -264,7 +264,7 @@ public class Main implements ApplicationListener {
 			// TODO:: set showLeaderBoard to true when needed
 			if(nofLeftEnemies <= 0)
 			{
-//				actionResolver.ShowLeaderBoard();
+				actionResolver.ShowLeaderBoard(score);
 				m_CurrentLevel++;
 				dispose();
 
