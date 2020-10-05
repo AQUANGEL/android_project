@@ -12,14 +12,16 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.vladlozkin.libgdk_protector.MissileImpl.MissileUpTrajectory;
+import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonLeftToRight;
 import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonRightToLeft;
 
 
@@ -33,24 +35,34 @@ public class Main implements ApplicationListener {
 	public static Texture backgroundTexture;
 	public static Sprite backgroundSprite;
 	private SpriteBatch spriteBatch;
+	Rectangle screenRectangel;
+//	Rectangle screenRectangel =  new Rectangle(-bound.getWidth() * 1.5f, Gdx.graphics.getHeight()/12,Gdx.graphics.getWidth() + bound.getWidth()* 2.5f,Gdx.graphics.getHeight() + bound.getHeight() * 2.5f);
 
-	Random rand = new Random();
-	CopyOnWriteArrayList enemysToDraw = new CopyOnWriteArrayList<IEnemyUpdate>();
-	CopyOnWriteArrayList enemysWaitingList = new CopyOnWriteArrayList<IEnemyUpdate>();
 	IEnemyUpdate enemyInWaitingList;
 	IEnemyUpdate enemyInToDrawList;
 	IEnemyUpdate enemy;
 	private final int MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS = 3;
 	private final int MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS = 1;
+	CopyOnWriteArrayList m_EnemysToDraw = new CopyOnWriteArrayList<IEnemyUpdate>();
+	CopyOnWriteArrayList m_EnemysWaitingList = new CopyOnWriteArrayList<IEnemyUpdate>();
+	CopyOnWriteArrayList itemsToRemove = new CopyOnWriteArrayList<IEnemyUpdate>();
+
+	Label scoreText;
+
 	IActionResolver actionResolver;
 
 	private int score = 0;
-	Label scoreText;
 	Label.LabelStyle scoreTextStyle;
 	BitmapFont scoreFont;
 
 	public static boolean showLoginScreen = true;
 	public static boolean showLeaderBoard = false;
+
+	private int m_CurrentLevel = 0;
+	private int m_MsForEnemyDispatch = 1500;
+	private int m_MsInWaitingList = 1500;
+	private int nofLeftEnemies;
+
 
 	public Main(IActionResolver actionResolver)
 	{
@@ -58,10 +70,16 @@ public class Main implements ApplicationListener {
 	}
 
 
-
 	@Override
 	public void create() {
-		loadTextures();
+		if (showLoginScreen)
+		{
+			actionResolver.ShowMainMenu();
+			showLoginScreen = false;
+		}
+		screenRectangel = new Rectangle(0, Gdx.graphics.getHeight()/12,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+		spriteBatch = new SpriteBatch();
+		createGameLevel(m_CurrentLevel);
 		swiperInit();
 		batch = new SpriteBatch();
 
@@ -80,45 +98,18 @@ public class Main implements ApplicationListener {
 		scoreText.setBounds(32, 32,200,100);
 		scoreText.setFontScale(4f,4f);
 
-		Thread enemyDispatchThread2 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while(true)
-				{
-					try {
-						Thread.sleep(3000);
-						if(!enemysWaitingList.isEmpty())
-						{
-							enemyInWaitingList = (IEnemyUpdate) enemysWaitingList.remove(0);
-							enemysToDraw.add(enemyInWaitingList);
-						}
-					}
-					catch (Exception e)
-					{
-					}
-				}
-			}
-		});
-		enemyDispatchThread2.start();
-
 		Thread enemyDispatchThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while(true)
 				{
 					try {
-						LinkedList itemsToRemove = (LinkedList<IEnemyUpdate>) enemysToDraw.clone();
-						for (Object iter : enemysToDraw) {
-							Thread.sleep(1500);
-							enemyInToDrawList = (IEnemyUpdate) iter;
-							if (enemyInToDrawList.Visible() == false) {
-								enemyInToDrawList.SetNewPosition();
-								enemyInToDrawList.Show();
-								enemysWaitingList.add(enemyInToDrawList);
-								itemsToRemove.add(enemyInToDrawList);
-							}
+						Thread.sleep(m_MsForEnemyDispatch);
+						if(!m_EnemysWaitingList.isEmpty())
+						{
+							enemyInWaitingList = (IEnemyUpdate) m_EnemysWaitingList.remove(0);
+							m_EnemysToDraw.add(enemyInWaitingList);
 						}
-						enemysToDraw.removeAll(itemsToRemove);
 					}
 					catch (Exception e)
 					{
@@ -128,22 +119,87 @@ public class Main implements ApplicationListener {
 			}
 		});
 		enemyDispatchThread.start();
+
+		Thread populateEnemyDispatchListThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true)
+				{
+					try {
+						itemsToRemove.clear();
+						for (Object iter : m_EnemysToDraw) {
+							Thread.sleep(1000);
+							enemyInToDrawList = (IEnemyUpdate) iter;
+							if (enemyInToDrawList.Visible() == false) {
+								enemyInToDrawList.SetNewPosition();
+								enemyInToDrawList.Show();
+								m_EnemysWaitingList.add(enemyInToDrawList);
+								itemsToRemove.add(enemyInToDrawList);
+							}
+						}
+						m_EnemysToDraw.removeAll(itemsToRemove);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		populateEnemyDispatchListThread.start();
 	}
 
-	private void loadTextures() {
-		spriteBatch = new SpriteBatch();
+	private void createGameLevel(int level) {
+		switch (level) {
+			case 0:
+				createIntro();
+				break;
+			case 1:
+				createFirstLevel();
+				break;
+			case 2:
+				createSecondLevel();
+				break;
+			case 3:
+				new Exception("Level not created yet");
+				break;
+			default:
+				new Exception("Level not created yet");
+		}
+	}
+
+
+
+	private void createIntro() {
 		backgroundTexture = new Texture("farmResized.png");
 		backgroundSprite = new Sprite(backgroundTexture);
+
 		for(int i = 0; i < MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS; i++)
 		{
-			enemysWaitingList.add(new BalloonRightToLeft());
+			m_EnemysWaitingList.add(new BalloonRightToLeft());
 		}
-//
-//		for(int i = 0; i < MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS; i++)
-//		{
-//			enemys.add(new BalloonLeftToRight());
-//		}
 
+		Collections.shuffle(m_EnemysWaitingList);
+		nofLeftEnemies = m_EnemysWaitingList.size();
+	}
+
+	private void createFirstLevel()
+	{
+		backgroundTexture = new Texture("farmResized.png");
+		backgroundSprite = new Sprite(backgroundTexture);
+
+		for(int i = 0; i < MAX_NUM_OF_RIGHT_TO_LEFT_BALLOONS; i++)
+		{
+			m_EnemysWaitingList.add(new BalloonRightToLeft());
+		}
+
+		for(int i = 0; i < MAX_NUM_OF_LEFT_TO_RIGHT_BALLOONS; i++)
+		{
+			m_EnemysWaitingList.add(new BalloonLeftToRight());
+		}
+
+		Collections.shuffle(m_EnemysWaitingList);
+		nofLeftEnemies = m_EnemysWaitingList.size();
 //		for(int i = 0; i < 1; i++)
 //		{
 //			enemys.add(new MissileDownTrajectory());
@@ -153,6 +209,13 @@ public class Main implements ApplicationListener {
 //		{
 //			enemys.add(new MissileUpTrajectory());
 //		}
+	}
+
+	private void createSecondLevel() {
+		backgroundTexture = new Texture("nirAm.jpg");
+		backgroundSprite = new Sprite(backgroundTexture);
+
+		nofLeftEnemies = 1; //this will never stop
 	}
 
 	private void swiperInit()
@@ -185,14 +248,6 @@ public class Main implements ApplicationListener {
 
 	@Override
 	public void render() {
-		if (showLoginScreen)
-		{
-			actionResolver.ShowMainMenu();
-			showLoginScreen = false;
-//			showLeaderBoard = true;  //TODO:: remove from here, just for testing
-		}
-		else
-		{
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -207,13 +262,16 @@ public class Main implements ApplicationListener {
 			handleSwipeOutcome();
 			// TODO:: add check of score or time elapsed or life etc.. ,
 			// TODO:: set showLeaderBoard to true when needed
-			if(showLeaderBoard)
+			if(nofLeftEnemies == 0)
 			{
-				actionResolver.ShowLeaderBoard();
-				showLeaderBoard  = false;
-			}
-		}
+//				actionResolver.ShowLeaderBoard();
+				m_CurrentLevel++;
+				dispose();
 
+				create();
+//				Gdx.app.exit();
+//				System.exit(0);
+			}
 	}
 
 	private void updateScore(int toAdd) {
@@ -224,12 +282,23 @@ public class Main implements ApplicationListener {
 
 	private void renderEnemys()
 	{
-		for(Object enemyIter : enemysToDraw)
+		for(Object enemyIter : m_EnemysToDraw)
 		{
 			enemy = (IEnemyUpdate) enemyIter;
 			if (enemy.Visible())
 			{
-				enemy.Move();
+				if(!enemy.TouchedGround())
+				{
+					if(enemy.GetBound().y < screenRectangel.y) {
+						enemy.ShowImpact();
+						enemy.setTouchedGround(true);
+						nofLeftEnemies--;
+					}
+					else
+					{
+						enemy.Move();
+					}
+				}
 				enemy.Draw(spriteBatch);
 			}
 		}
@@ -253,15 +322,14 @@ public class Main implements ApplicationListener {
 	{
 		for(Vector2 point : swipe.path())
 		{
-			for(Object enemyIter : enemysToDraw)
+			for(Object enemyIter : m_EnemysToDraw)
 			{
 				enemy = (IEnemyUpdate) enemyIter;
-				if(enemy.GetBound().contains(point.x,point.y)){
-					if (enemy.isShouldDraw()) {
-						updateScore(enemy.score());
-						enemy.Hide();
-						System.out.println("ENEMY GOT DESTRUCTED FROM SWIPE");
-					}
+				if(enemy.GetBound().contains(point.x,point.y) && !enemy.TouchedGround()){
+					enemy.Hide();
+					nofLeftEnemies--;
+					updateScore(enemy.score());
+
 				}
 			}
 		}
@@ -288,6 +356,8 @@ public class Main implements ApplicationListener {
 		swipeTexture.dispose();
 		backgroundTexture.dispose();
 		spriteBatch.dispose();
+		m_EnemysToDraw.clear();
+		m_EnemysWaitingList.clear();
 	}
 
 }

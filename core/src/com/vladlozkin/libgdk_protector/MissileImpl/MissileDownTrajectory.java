@@ -73,6 +73,11 @@ public class MissileDownTrajectory extends Enemy implements IEnemyUpdate
         bound.setCenter(newX, newY);
     }
 
+    @Override
+    public boolean TouchedGround() {
+        return super.touchedGround;
+    }
+
 
 }
 

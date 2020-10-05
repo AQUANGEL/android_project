@@ -76,6 +76,11 @@ public class MissileUpTrajectory extends Enemy implements IEnemyUpdate
 //        sound.play(0.3f);
     }
 
+    @Override
+    public boolean TouchedGround() {
+        return super.touchedGround;
+    }
+
 
 }
 

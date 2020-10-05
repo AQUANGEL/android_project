@@ -12,24 +12,20 @@ public class BalloonLeftToRight extends Enemy implements IEnemyUpdate {
 
     private final float FIRST_LEVEL_MAX_DELTA = 0.1f;
     private float weight = 10;
-    Random rand;
+    Random rand = new Random();
 
     public BalloonLeftToRight()
     {
         super( Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), "ballon.png");
-        rand = new Random(100);
+        SetNewPosition();
     }
 
-    @Override
     public void Move() {
-        float delta = rand.nextFloat() * FIRST_LEVEL_MAX_DELTA + 0.2f;
-        super.getBound().x -= weight*(delta*2);
-        super.getBound().y -= weight*(delta/2);
-
-        if (!super.getScreenRectangel().contains( super.getBound()))
+        if (CheckIfShouldMove())
         {
-            super.HideEnemy();
-            System.out.println("ENEMY IS OUT OF THE SCREEN");
+            float delta = rand.nextFloat() * FIRST_LEVEL_MAX_DELTA + 0.2f;
+            super.getBound().x -= weight*(delta*2);
+            super.getBound().y -= weight*(delta/2);
         }
     }
 
@@ -63,4 +59,10 @@ public class BalloonLeftToRight extends Enemy implements IEnemyUpdate {
         float newY = Gdx.graphics.getHeight() - bound.y + rand.nextInt(Gdx.graphics.getHeight()/10);
         bound.setCenter(newX, newY);
     }
+
+    @Override
+    public boolean TouchedGround() {
+        return super.touchedGround;
+    }
+
 }

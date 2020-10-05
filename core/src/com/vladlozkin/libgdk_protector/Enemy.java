@@ -17,15 +17,14 @@ public class Enemy {
 
 
     protected boolean shouldDraw = true;
-    protected boolean shouldMove = true;
     protected Rectangle screenRectangel;
+    public boolean touchedGround = false;
 
     public Enemy(float x, float y, String internalPathToEnemyImage){
         texture = new Texture(Gdx.files.internal(internalPathToEnemyImage));
         textureRegion = new TextureRegion(texture);
         textureOnImpactWithGround = new Texture(Gdx.files.internal("fire1.png"));
         bound = new Rectangle(rand.nextInt((int)x), y - texture.getHeight(), texture.getWidth()/1.5f, texture.getHeight()/1.5f);
-        screenRectangel =  new Rectangle(-bound.getWidth() * 1.5f, Gdx.graphics.getHeight()/12,Gdx.graphics.getWidth() + bound.getWidth()* 2.5f,Gdx.graphics.getHeight() + bound.getHeight() * 2.5f);
     }
 
     public Rectangle getBound(){
@@ -44,7 +43,16 @@ public class Enemy {
     public void HideEnemy()
     {
         shouldDraw = false;
+    }
 
+    public void setTouchedGround(boolean touchedGround)
+    {
+        this.touchedGround = touchedGround;
+    }
+
+    public boolean CheckIfShouldMove()
+    {
+        return !touchedGround;
     }
 
     public void ShowImpact()

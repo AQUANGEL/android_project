@@ -11,6 +11,8 @@ public interface IEnemyUpdate {
     void Draw(SpriteBatch spriteBatch);
     void SetNewPosition();
     void ShowImpact();
+    boolean TouchedGround();
+    void setTouchedGround(boolean touchedGround);
     Rectangle GetBound();
     int score();
 

@@ -1,7 +1,6 @@
 package com.vladlozkin.libgdk_protector.BalloonImpl;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.vladlozkin.libgdk_protector.Enemy;
@@ -13,30 +12,21 @@ public class BalloonRightToLeft extends Enemy implements IEnemyUpdate {
 
     private final float FIRST_LEVEL_MAX_DELTA = 0.1f;
     private float weight = 10;
-    Random rand = new Random(100);
+    Random rand = new Random();
 
     public BalloonRightToLeft() {
         super( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight(), "ballon.png");
-
-
+        SetNewPosition();
     }
 
-    public void Move(){
-        if(shouldMove == false)
+    public void Move()
+    {
+        if (CheckIfShouldMove())
         {
-            return;
+            float delta = rand.nextFloat() * FIRST_LEVEL_MAX_DELTA + 0.2f;
+            super.getBound().x += weight*(delta*2);
+            super.getBound().y -= weight*(delta/2);
         }
-        if (!super.getScreenRectangel().contains( super.getBound()))
-        {
-            super.ShowImpact();
-            shouldMove = false;
-        }
-
-        float delta = rand.nextFloat() * FIRST_LEVEL_MAX_DELTA + 0.2f;
-        super.getBound().x += weight*(delta*2);
-        super.getBound().y -= weight*(delta/2);
-
-
     }
 
     public boolean Visible(){
@@ -68,5 +58,10 @@ public class BalloonRightToLeft extends Enemy implements IEnemyUpdate {
         float newX =  0 + rand.nextInt(Gdx.graphics.getWidth()/4);
         float newY = Gdx.graphics.getHeight() - bound.y + rand.nextInt(Gdx.graphics.getHeight()/10);
         bound.setCenter(newX, newY);
+    }
+
+    @Override
+    public boolean TouchedGround() {
+        return super.touchedGround;
     }
 }
