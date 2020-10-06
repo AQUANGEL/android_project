@@ -46,17 +46,17 @@ public class PopTutorial implements ILevel{
     @Override
     public CopyOnWriteArrayList<IEnemy> InitLevel() {
 
-        CopyOnWriteArrayList enemise = new CopyOnWriteArrayList<IEnemy>();
+        CopyOnWriteArrayList enemies = new CopyOnWriteArrayList<IEnemy>();
 
         BalloonStationary swipeBalloon = new BalloonStationary(Gdx.graphics.getWidth()*0.2f, Gdx.graphics.getWidth()/2);
         BalloonStationary tapBalloon = new BalloonStationary(Gdx.graphics.getWidth()*0.8f, Gdx.graphics.getWidth()/2 + 200);
-        enemise.add(swipeBalloon);
-        enemise.add(tapBalloon);
+        enemies.add(swipeBalloon);
+        enemies.add(tapBalloon);
 
         swipeTeacherText.setBounds(swipeBalloon.GetBound().x, swipeBalloon.GetBound().y,200,100);
         tapTeacherText.setBounds(tapBalloon.GetBound().x, tapBalloon.GetBound().y,200,100);
 
-        return enemise;
+        return enemies;
     }
 
     @Override

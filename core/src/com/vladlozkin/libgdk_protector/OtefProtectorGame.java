@@ -34,6 +34,7 @@ public class OtefProtectorGame {
 
     private int score = 0;
     private int m_NumberOfEnemies;
+    private final int RENDER_LOOPS_AFTER_LAST_ENEMY = 20;
     private boolean m_IntroLevel = false;
     private int m_CurrentLevel = 0;
 
@@ -44,8 +45,7 @@ public class OtefProtectorGame {
     private int m_MsForEnemyDispatch = 1500;
     private int m_MsInWaitingList = 1500;
 
-    public static Texture backgroundTexture;
-    public static Sprite backgroundSprite;
+
     Rectangle screenRectangel;
     SpriteBatch m_SpriteBatch;
 
@@ -80,14 +80,13 @@ public class OtefProtectorGame {
     public void RenderGame()
     {
         m_Level.RenderBackground();
-        renderEnemys();
+        renderEnemies();
         renderScore();
         m_Level.AdditionalRenderingIfNeeded();
-        System.out.println(m_NumberOfEnemies);
     }
 
 
-    private void renderEnemys()
+    private void renderEnemies()
     {
         boolean checkIfwaterBalloonHitFireNeeded = false;
         for(Object enemyIter : m_EnemysToDraw)
@@ -240,19 +239,28 @@ public class OtefProtectorGame {
 
     public boolean LevelFinished()
     {
-        return m_NumberOfEnemies == 0;
+        // <= for allowing the app to finilize rendering after last enemy removed.
+        return m_NumberOfEnemies <= 0;
     }
 
-    public void HandleLevelFinished()
-    {
-        m_CurrentLevel++;
-
+    public void HandleLevelFinished()  {
         if(m_IntroLevel)
         {
             m_IntroLevel = false;
         }
-        setLevel(m_CurrentLevel);
-//        m_ActionResolver.ShowLeaderBoard(score);
+
+        finilizeRenderingAndSetNextLevel();
+
+       //        m_ActionResolver.ShowLeaderBoard(score);
+    }
+
+    private void finilizeRenderingAndSetNextLevel() {
+        m_NumberOfEnemies--;
+        if (m_NumberOfEnemies <= -RENDER_LOOPS_AFTER_LAST_ENEMY)
+        {
+            m_CurrentLevel++;
+            setLevel(m_CurrentLevel);
+        }
     }
 
     private void updateScore(int toAdd) {

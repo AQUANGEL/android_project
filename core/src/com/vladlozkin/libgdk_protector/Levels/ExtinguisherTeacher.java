@@ -1,9 +1,12 @@
 package com.vladlozkin.libgdk_protector.Levels;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonExtinguisher;
 import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonLeftToRight;
 import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonRightToLeft;
@@ -18,37 +21,50 @@ public class ExtinguisherTeacher implements ILevel {
     Sprite backgroundSprite;
     SpriteBatch m_SpriteBatch;
 
+    Label extinguisherText;
+    Label.LabelStyle textStyle;
+    BitmapFont font;
+
     public ExtinguisherTeacher(SpriteBatch spriteBatch) {
         m_SpriteBatch = spriteBatch;
         backgroundTexture = new Texture("farmResized.png");
         backgroundSprite = new Sprite(backgroundTexture);
+
+        font = new BitmapFont();
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        textStyle = new Label.LabelStyle();
+        textStyle.font = font;
+        extinguisherText = new Label("POP the balloon\nto extinguish fires", textStyle);
+        extinguisherText.setColor(Color.ROYAL);
+        extinguisherText.setFontScale(4f,4f);
+        extinguisherText.setBounds(150, Gdx.graphics.getHeight()/2,200,100);
     }
 
     @Override
     public CopyOnWriteArrayList<IEnemy> InitLevel() {
-        CopyOnWriteArrayList enemise = new CopyOnWriteArrayList<IEnemy>();
+        CopyOnWriteArrayList enemies = new CopyOnWriteArrayList<IEnemy>();
 
         for(int i = 0; i < 5; i++)
         {
             BalloonRightToLeft balloon = new BalloonRightToLeft();
             balloon.SetPositionOnTheGround(Gdx.graphics.getHeight()/6);
-            enemise.add(balloon);
+            enemies.add(balloon);
         }
 
         for(int i = 0; i < 5; i++)
         {
             BalloonLeftToRight balloon = new BalloonLeftToRight();
             balloon.SetPositionOnTheGround(Gdx.graphics.getHeight()/6);
-            enemise.add(balloon);
+            enemies.add(balloon);
         }
 
-        Collections.shuffle(enemise);
+        Collections.shuffle(enemies);
 
         BalloonExtinguisher extinguisher = new BalloonExtinguisher();
         extinguisher.SetNewPosition();
-        enemise.add(extinguisher);
+        enemies.add(extinguisher);
 
-        return enemise;
+        return enemies;
     }
 
     @Override
@@ -58,6 +74,6 @@ public class ExtinguisherTeacher implements ILevel {
 
     @Override
     public void AdditionalRenderingIfNeeded() {
-
+        extinguisherText.draw(m_SpriteBatch, (float) 1.0);
     }
 }
