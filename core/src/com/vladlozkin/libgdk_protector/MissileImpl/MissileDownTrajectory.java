@@ -3,13 +3,10 @@ package com.vladlozkin.libgdk_protector.MissileImpl;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.vladlozkin.libgdk_protector.Enemy;
-import com.vladlozkin.libgdk_protector.IEnemyUpdate;
+import com.vladlozkin.libgdk_protector.IEnemy;
 
-import java.util.Random;
-
-public class MissileDownTrajectory extends Enemy implements IEnemyUpdate
+public class MissileDownTrajectory extends Enemy implements IEnemy
 {
     float rotationDegree = 260;
     private float weight = 10;
@@ -17,44 +14,30 @@ public class MissileDownTrajectory extends Enemy implements IEnemyUpdate
     float velocityX = 4f;
     float velocityY = 7f;
 
-
     public MissileDownTrajectory() {
         super( Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), "missile.png");
         textureRegion = new TextureRegion(texture);
     }
 
     @Override
-    public void Move() {
-        float delta = rand.nextFloat() * 0.2f + 0.2f;
-        super.getBound().x += velocityX * delta*2;
-        super.getBound().y += velocityY * delta*2;
+    public void Move(float delta) {
+//        float delta = rand.nextFloat() * 0.2f + 0.2f;
+        super.GetBound().x += velocityX * delta*2;
+        super.GetBound().y += velocityY * delta*2;
         velocityY = velocityY * delta + -2;
         rotationDegree -= 0.05;
 
-        if (!super.getScreenRectangel().contains( super.getBound()))
+        if (!super.getScreenRectangel().contains( super.GetBound()))
         {
-            super.HideEnemy();
+            super.Hide();
         }
     }
 
-    public boolean Visible(){
-        return super.shouldDraw == true;
-    }
-
-    public void Hide()
-    {
-        super.shouldDraw = false;
-    }
-
+    @Override
     public void Show()
     {
         rotationDegree = 260;
         super.shouldDraw = true;
-    }
-
-    @Override
-    public Rectangle GetBound() {
-        return super.getBound();
     }
 
     @Override
@@ -72,13 +55,6 @@ public class MissileDownTrajectory extends Enemy implements IEnemyUpdate
         velocityY = 7f;
         bound.setCenter(newX, newY);
     }
-
-    @Override
-    public boolean TouchedGround() {
-        return super.touchedGround;
-    }
-
-
 }
 
 

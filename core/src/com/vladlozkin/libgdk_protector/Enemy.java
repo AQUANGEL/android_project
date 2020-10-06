@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
-public class Enemy {
+public class Enemy implements IEnemy {
     protected Random rand = new Random(100);
     protected Rectangle bound;
     protected Texture texture;
@@ -24,11 +24,7 @@ public class Enemy {
         texture = new Texture(Gdx.files.internal(internalPathToEnemyImage));
         textureRegion = new TextureRegion(texture);
         textureOnImpactWithGround = new Texture(Gdx.files.internal("fire1.png"));
-        bound = new Rectangle(rand.nextInt((int)x), y - texture.getHeight(), texture.getWidth()/1.5f, texture.getHeight()/1.5f);
-    }
-
-    public Rectangle getBound(){
-        return bound;
+        bound = new Rectangle(rand.nextInt((int)x+1), Math.max(y - texture.getHeight(),0), texture.getWidth()/1.5f, texture.getHeight()/1.5f);
     }
 
     public Rectangle getScreenRectangel()
@@ -40,14 +36,39 @@ public class Enemy {
         return shouldDraw == true;
     }
 
-    public void HideEnemy()
-    {
+    @Override
+    public void Hide() {
         shouldDraw = false;
+    }
+
+    @Override
+    public void Show() {
+        shouldDraw = true;
+    }
+
+    @Override
+    public void Move(float delta) throws Exception {
+        throw new Exception("You must overide Move method");
+    }
+
+    @Override
+    public void Draw(SpriteBatch spriteBatch) {
+        spriteBatch.draw(textureRegion, bound.x, bound.y, bound.getWidth()/2, bound.getHeight()/2, texture.getWidth(), texture.getHeight(), 0.5f,0.5f, 0);
+    }
+
+    @Override
+    public void SetNewPosition() throws Exception {
+        throw new Exception("You must overide setNewPosition method");
     }
 
     public void setTouchedGround(boolean touchedGround)
     {
         this.touchedGround = touchedGround;
+    }
+
+    @Override
+    public Rectangle GetBound() {
+        return bound;
     }
 
     public boolean CheckIfShouldMove()
@@ -60,21 +81,13 @@ public class Enemy {
         textureRegion.setRegion(textureOnImpactWithGround);
     }
 
-    public void ShowEnemy()
-    {
-        shouldDraw = true;
+    @Override
+    public boolean TouchedGround() {
+        return touchedGround;
     }
 
-    public Texture getTexture(){
-        return texture;
-    }
+    public int Score() { return 10; }
 
-    public int score() { return 10; }
+    public boolean ShouldDraw() { return this.shouldDraw; }
 
-    public boolean isShouldDraw() { return this.shouldDraw; }
-
-    public void draw(SpriteBatch spriteBatch){
-        spriteBatch.draw(textureRegion, bound.x, bound.y, bound.getWidth()/2, bound.getHeight()/2, texture.getWidth(), texture.getHeight(), 0.5f,0.5f, 0);
-//        spriteBatch.draw(texture, bound.x, bound.y, texture.getWidth()/1.5f, texture.getHeight()/1.5f);
-    }
 }

@@ -1,16 +1,12 @@
 package com.vladlozkin.libgdk_protector.BalloonImpl;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.vladlozkin.libgdk_protector.Enemy;
-import com.vladlozkin.libgdk_protector.IEnemyUpdate;
 
 import java.util.Random;
 
-public class BalloonRightToLeft extends Enemy implements IEnemyUpdate {
+public class BalloonRightToLeft extends Enemy {
 
-    private final float FIRST_LEVEL_MAX_DELTA = 0.1f;
     private float weight = 10;
     Random rand = new Random();
 
@@ -19,38 +15,14 @@ public class BalloonRightToLeft extends Enemy implements IEnemyUpdate {
         SetNewPosition();
     }
 
-    public void Move()
+    public void Move(float delta)
     {
         if (CheckIfShouldMove())
         {
-            float delta = rand.nextFloat() * FIRST_LEVEL_MAX_DELTA + 0.2f;
-            super.getBound().x += weight*(delta*2);
-            super.getBound().y -= weight*(delta/2);
+//            float delta = rand.nextFloat() * FIRST_LEVEL_MAX_DELTA + 0.2f;
+            super.GetBound().x += weight*(delta*2 + 0.3f);
+            super.GetBound().y -= weight*(delta/2 + 0.1f);
         }
-    }
-
-    public boolean Visible(){
-        return super.shouldDraw == true;
-    }
-
-    public void Hide()
-    {
-        super.shouldDraw = false;
-    }
-
-    public void Show()
-    {
-        super.shouldDraw = true;
-    }
-
-    @Override
-    public Rectangle GetBound() {
-        return super.getBound();
-    }
-
-    @Override
-    public void Draw(SpriteBatch spriteBatch) {
-        super.draw(spriteBatch);
     }
 
     @Override
@@ -60,8 +32,9 @@ public class BalloonRightToLeft extends Enemy implements IEnemyUpdate {
         bound.setCenter(newX, newY);
     }
 
-    @Override
-    public boolean TouchedGround() {
-        return super.touchedGround;
+    public void SetPositionOnTheGround(float groundY)
+    {
+        float newX = rand.nextInt(Gdx.graphics.getWidth());
+        bound.setCenter(newX, groundY);
     }
 }

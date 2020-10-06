@@ -21,14 +21,14 @@ class LeaderBoardActivity : Activity() {
     {
         super.onStart()
         var scores: Array<Score> = arrayOf<Score>();
-        thread {
+        val fetchDb = thread {
             val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java,
                     "database-name").build()
 
             scores = db.scoreDao().getAll().sortedByDescending { it.score }.toTypedArray()
-
-
+            db.close()
         }
+        fetchDb.join()
         val myListAdapter = ScoreListAdapter(this, scores)
         scoreList.adapter = myListAdapter
 

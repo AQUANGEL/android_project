@@ -21,11 +21,11 @@
         </activity>
         <activity
             android:name="com.vladlozkin.libgdk_protector.WelcomeActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="landscape">
         </activity>
         <activity
             android:name="com.vladlozkin.libgdk_protector.LeaderBoardActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="landscape">
         </activity>
     </application>
 
