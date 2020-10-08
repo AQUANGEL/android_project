@@ -34,7 +34,8 @@ public class OtefProtectorGame {
 
     private int score = 0;
     private int m_NumberOfEnemies;
-    private final int RENDER_LOOPS_AFTER_LAST_ENEMY = 20;
+    private int RENDER_LOOPS_AFTER_LAST_ENEMY = 20;
+    private int renderCounter = 0;
     private boolean m_IntroLevel = false;
     private int m_CurrentLevel = 0;
 
@@ -44,6 +45,8 @@ public class OtefProtectorGame {
 
     private int m_MsForEnemyDispatch = 1500;
     private int m_MsInWaitingList = 1500;
+
+
 
 
     Rectangle screenRectangel;
@@ -240,7 +243,7 @@ public class OtefProtectorGame {
     public boolean LevelFinished()
     {
         // <= for allowing the app to finilize rendering after last enemy removed.
-        return m_NumberOfEnemies <= 0;
+        return m_NumberOfEnemies == 0;
     }
 
     public void HandleLevelFinished()  {
@@ -255,9 +258,10 @@ public class OtefProtectorGame {
     }
 
     private void finilizeRenderingAndSetNextLevel() {
-        m_NumberOfEnemies--;
-        if (m_NumberOfEnemies <= -RENDER_LOOPS_AFTER_LAST_ENEMY)
+        renderCounter++;
+        if (renderCounter == RENDER_LOOPS_AFTER_LAST_ENEMY)
         {
+            renderCounter = 0;
             m_CurrentLevel++;
             setLevel(m_CurrentLevel);
         }
