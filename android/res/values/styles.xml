@@ -9,4 +9,14 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        ...
+        <item name="colorAccent">@color/golden</item>
+    </style>
+
+    <style name="AppTheme.Button">
+        <item name="android:background">@drawable/gradient_background</item>
+        <item name="android:textColor">@color/golden</item>
+    </style>
+
 </resources>
