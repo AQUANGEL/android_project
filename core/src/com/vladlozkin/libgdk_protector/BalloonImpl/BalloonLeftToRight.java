@@ -28,7 +28,7 @@ public class BalloonLeftToRight extends Enemy {
 
     @Override
     public void SetNewPosition() {
-        float newX =  Gdx.graphics.getWidth() - rand.nextInt(Gdx.graphics.getWidth()/4);
+        float newX =  rand.nextInt(Gdx.graphics.getWidth());
         float newY = Gdx.graphics.getHeight() - bound.y + rand.nextInt(Gdx.graphics.getHeight()/10);
         bound.setCenter(newX, newY);
     }

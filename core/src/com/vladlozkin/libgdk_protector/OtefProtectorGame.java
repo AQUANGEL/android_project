@@ -64,6 +64,10 @@ public class OtefProtectorGame {
         itemsToRemove = new CopyOnWriteArrayList<IEnemy>();
         itemsToRemoveAfterImpact = new CopyOnWriteArrayList<IEnemy>();
         screenRectangel = new Rectangle(0, Gdx.graphics.getHeight()/12 ,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        System.out.println(Gdx.graphics.getWidth());
+        System.out.println(Gdx.graphics.getHeight());
+        System.out.println(screenRectangel.getX());
+        System.out.println(screenRectangel.getY());
         scoreFont = new BitmapFont();
         scoreFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         scoreTextStyle = new Label.LabelStyle();
@@ -104,13 +108,9 @@ public class OtefProtectorGame {
                         enemy.setTouchedGround(true);
                         m_NumberOfEnemies--;
 
-                        if (enemy instanceof BalloonExtinguisher)
-                        {
-                            checkIfwaterBalloonHitFireNeeded = true;
-                            enemyFoCheckingOverlap = enemy;
-                        }
+
                     }
-                    else if(!screenRectangel.overlaps(enemy.GetBound()) && !screenRectangel.contains(enemy.GetBound()))
+                    else if(!enemy.GetBound().overlaps(screenRectangel) && !screenRectangel.contains(enemy.GetBound()))
                     {
                         enemy.Hide();
                     }
@@ -124,9 +124,20 @@ public class OtefProtectorGame {
                         }
                     }
                 }
+                else
+                {
+                    if (enemy instanceof BalloonExtinguisher)
+                    {
+                        checkIfwaterBalloonHitFireNeeded = true;
+                        enemyFoCheckingOverlap = enemy;
+                    }
+                }
+
                 enemy.Draw(m_SpriteBatch);
             }
         }
+
+
 
         if(checkIfwaterBalloonHitFireNeeded)
         {
@@ -141,7 +152,7 @@ public class OtefProtectorGame {
                 }
             }
             score += enemy.Score() * itemsToRemoveAfterImpact.size();
-            m_EnemysToDraw.remove(enemyFoCheckingOverlap);
+//            m_EnemysToDraw.remove(enemyFoCheckingOverlap);
             m_EnemysToDraw.removeAll(itemsToRemoveAfterImpact);
 
         }
@@ -232,7 +243,6 @@ public class OtefProtectorGame {
             case 3:
                 m_Level = new LevelTwo(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
-//                m_NumberOfEnemies = m_EnemysWaitingList.size();
                 m_NumberOfEnemies = 1; //this will never stop
                 break;
             default:
@@ -240,10 +250,25 @@ public class OtefProtectorGame {
         }
     }
 
-    public boolean LevelFinished()
-    {
-        // <= for allowing the app to finilize rendering after last enemy removed.
-        return m_NumberOfEnemies == 0;
+    public boolean LevelFinished() {
+        System.out.println("Number of enemies");
+        System.out.println(m_NumberOfEnemies);
+        System.out.println(m_EnemysToDraw.size());
+        System.out.println(m_EnemysWaitingList.size());
+
+        IEnemy enemy;
+
+        for (Object iter : m_EnemysToDraw) {
+            enemy = (IEnemy) iter;
+            if (!enemy.TouchedGround()) {
+                return false;
+            }
+        }
+        if (m_EnemysWaitingList.size() > 0)
+        {
+            return false;
+        }
+        return true;
     }
 
     public void HandleLevelFinished()  {
@@ -253,7 +278,6 @@ public class OtefProtectorGame {
         }
 
         finilizeRenderingAndSetNextLevel();
-
        //        m_ActionResolver.ShowLeaderBoard(score);
     }
 
@@ -307,10 +331,10 @@ public class OtefProtectorGame {
                             Thread.sleep(1000);
                             enemyInToDrawList = (IEnemy) iter;
                             if (enemyInToDrawList.Visible() == false && !enemyInToDrawList.TouchedGround()) {
-                                enemyInToDrawList.SetNewPosition();
-                                enemyInToDrawList.Show();
                                 m_EnemysWaitingList.add(enemyInToDrawList);
                                 itemsToRemove.add(enemyInToDrawList);
+                                enemyInToDrawList.SetNewPosition();
+                                enemyInToDrawList.Show();
                             }
                         }
                         m_EnemysToDraw.removeAll(itemsToRemove);

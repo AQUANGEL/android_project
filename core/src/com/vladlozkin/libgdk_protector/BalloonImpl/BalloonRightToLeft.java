@@ -19,7 +19,6 @@ public class BalloonRightToLeft extends Enemy {
     {
         if (CheckIfShouldMove())
         {
-//            float delta = rand.nextFloat() * FIRST_LEVEL_MAX_DELTA + 0.2f;
             super.GetBound().x += weight*(delta*2 + 0.3f);
             super.GetBound().y -= weight*(delta/2 + 0.1f);
         }
@@ -27,7 +26,7 @@ public class BalloonRightToLeft extends Enemy {
 
     @Override
     public void SetNewPosition() {
-        float newX =  0 + rand.nextInt(Gdx.graphics.getWidth()/4);
+        float newX =  rand.nextInt(Gdx.graphics.getWidth());
         float newY = Gdx.graphics.getHeight() - bound.y + rand.nextInt(Gdx.graphics.getHeight()/10);
         bound.setCenter(newX, newY);
     }
