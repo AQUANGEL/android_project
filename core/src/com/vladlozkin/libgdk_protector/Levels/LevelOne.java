@@ -27,26 +27,26 @@ public class LevelOne implements ILevel {
 
     @Override
     public CopyOnWriteArrayList<IEnemy> InitLevel() {
-        CopyOnWriteArrayList enemise = new CopyOnWriteArrayList<IEnemy>();
+        CopyOnWriteArrayList enemies = new CopyOnWriteArrayList<IEnemy>();
 
         for(int i = 0; i < 5; i++)
         {
-            enemise.add(new BalloonRightToLeft());
+            enemies.add(new BalloonRightToLeft());
         }
 
         for(int i = 0; i < 5; i++)
         {
-            enemise.add(new BalloonLeftToRight());
+            enemies.add(new BalloonLeftToRight());
         }
 
         for(int i = 0; i < 2; i++)
         {
-            enemise.add(new BalloonExtinguisher());
+            enemies.add(new BalloonExtinguisher());
         }
 
-        Collections.shuffle(enemise);
+        Collections.shuffle(enemies);
 
-        return enemise;
+        return enemies;
     }
 
     @Override
