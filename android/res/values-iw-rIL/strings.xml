@@ -9,4 +9,7 @@
     <string name="score">תוצאה</string>
     <string name="protector_app_logo">לוגו אפליקצית מגן</string>
     <string name="balloons">בלונים</string>
+    <string name="add_score">הוסף תוצאה</string>
+    <string name="save_score">שמור תוצאה</string>
+    <string name="enter_name">אנא הכנס את שמך</string>
 </resources>
