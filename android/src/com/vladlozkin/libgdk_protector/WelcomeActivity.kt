@@ -19,6 +19,7 @@ class WelcomeActivity : Activity() {
             val returnIntent = Intent()
             // I don't check the data of returned Intent, made it for future use if we will need it.
             // could of just write finish() and that is it.
+
             returnIntent.putExtra("startGame", 1)
             setResult(RESULT_OK, returnIntent)
             finish()
