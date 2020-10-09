@@ -1,6 +1,7 @@
 package com.vladlozkin.libgdk_protector
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.room.Room
@@ -25,17 +26,25 @@ class LeaderBoardActivity : Activity() {
             val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java,
                     "database-name").build()
 
+            if (db.scoreDao().getAll().size == 0) {
+                db.scoreDao().insertAll(Score(1, "Tomer Test", 1000))
+            }
+
             scores = db.scoreDao().getAll().sortedByDescending { it.score }.toTypedArray()
             db.close()
         }
         fetchDb.join()
+
         val myListAdapter = ScoreListAdapter(this, scores)
         scoreList.adapter = myListAdapter
 
         // here you get the score
-        var usrScore: Int = intent.getIntExtra("score", -9999) // 2
+        val usrScore: Int = intent.getIntExtra("score", -9999) // 2
         Toast.makeText(this, usrScore.toString() , Toast.LENGTH_SHORT).show()
     }
 
-    override fun onBackPressed() {}
+    override fun onBackPressed() {
+        val intent = Intent(this, WelcomeActivity::class.java)
+        startActivity(intent)
+    }
 }

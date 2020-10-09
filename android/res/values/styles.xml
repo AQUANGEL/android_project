@@ -11,12 +11,17 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         ...
+        <item name="android:textColor">@color/golden</item>
         <item name="colorAccent">@color/golden</item>
     </style>
 
     <style name="AppTheme.Button">
         <item name="android:background">@drawable/gradient_background</item>
         <item name="android:textColor">@color/golden</item>
+    </style>
+
+    <style name="AppTheme.ScoreList">
+        <item name="android:textAllCaps">true</item>
     </style>
 
 </resources>

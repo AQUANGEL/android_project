@@ -254,7 +254,7 @@ public class OtefProtectorGame {
 
         finilizeRenderingAndSetNextLevel();
 
-       //        m_ActionResolver.ShowLeaderBoard(score);
+        m_ActionResolver.ShowLeaderBoard(score);
     }
 
     private void finilizeRenderingAndSetNextLevel() {

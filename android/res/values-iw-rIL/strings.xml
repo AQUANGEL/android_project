@@ -7,4 +7,6 @@
     <string name="rank">דירוג</string>
     <string name="name">שם השחקן</string>
     <string name="score">תוצאה</string>
+    <string name="protector_app_logo">לוגו אפליקצית מגן</string>
+    <string name="balloons">בלונים</string>
 </resources>

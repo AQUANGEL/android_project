@@ -18,7 +18,7 @@ class ScoreListAdapter (private val context: Activity, private val scores: Array
 
         val scoreObj = scores[position]
 
-        rank.text = position.toString()
+        rank.text = (position + 1).toString()
         userName.text = scoreObj.user_name
         score.text = scoreObj.score.toString()
 

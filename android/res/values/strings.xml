@@ -8,5 +8,7 @@
     <string name="rank">Rank</string>
     <string name="name">Player Name</string>
     <string name="score">Score</string>
+    <string name="protector_app_logo">Protector App Logo</string>
+    <string name="balloons">balloons</string>
 
 </resources>

@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 
 import kotlinx.android.synthetic.main.welcome_screen.*
@@ -21,6 +23,17 @@ class WelcomeActivity : Activity() {
             setResult(RESULT_OK, returnIntent)
             finish()
         }
+
+        leaderBoardBtn.setOnClickListener {
+            val intent = Intent(this, LeaderBoardActivity::class.java)
+            startActivity(intent)
+        }
+
+        val animation = AnimationUtils.loadAnimation(this, R.anim.balloon_animation)
+        balloonSet1.startAnimation(animation)
+        balloonSet2.startAnimation(animation)
+        balloonSet3.startAnimation(animation)
+        balloonSet4.startAnimation(animation)
     }
 
     override fun onBackPressed() {}

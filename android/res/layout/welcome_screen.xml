@@ -6,24 +6,86 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="212dp"
-        android:layout_height="220dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:src="@mipmap/ic_launcher_foreground" />
+        android:layout_marginTop="20dp"
+        android:src="@mipmap/ic_launcher_foreground"
+        android:contentDescription="@string/protector_app_logo" />
 
     <Button
+        android:id="@+id/startGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logo"
+        android:layout_below="@+id/leaderBoardBtn"
         android:layout_centerHorizontal="true"
         android:text="@string/start_game"
         android:textSize="30sp"
         android:theme="@style/AppTheme.Button"
         android:background="@drawable/button_shape"
-        android:layout_marginTop="48dp"
-        android:id="@+id/startGame"
+        android:layout_marginTop="24dp"
         />
+
+    <Button
+        android:id="@+id/leaderBoardBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:text="@string/leader_board"
+        android:textSize="30sp"
+        android:theme="@style/AppTheme.Button"
+        android:background="@drawable/button_shape"
+        android:layout_marginTop="24dp"
+        />
+
+    <ImageView
+        android:id="@+id/balloonSet1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/balloons"
+        android:src="@drawable/ballon"
+        android:layout_below="@id/startGame"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:stateListAnimator="@anim/balloon_animation"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/balloonSet2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/balloons"
+        android:src="@drawable/ballon"
+        android:layout_below="@id/startGame"
+        android:layout_toLeftOf="@id/startGame"
+        android:layout_alignParentBottom="true"
+        android:stateListAnimator="@anim/balloon_animation"
+        android:layout_toStartOf="@id/startGame" />
+
+    <ImageView
+        android:id="@+id/balloonSet3"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/balloons"
+        android:src="@drawable/ballon"
+        android:layout_below="@id/startGame"
+        android:layout_toRightOf="@id/startGame"
+        android:layout_alignParentBottom="true"
+        android:stateListAnimator="@anim/balloon_animation"
+        android:layout_toEndOf="@id/startGame" />
+
+    <ImageView
+        android:id="@+id/balloonSet4"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/balloons"
+        android:src="@drawable/ballon"
+        android:layout_below="@id/startGame"
+        android:layout_alignParentBottom="true"
+        android:stateListAnimator="@anim/balloon_animation"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>
