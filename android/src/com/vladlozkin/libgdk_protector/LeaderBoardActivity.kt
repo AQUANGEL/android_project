@@ -46,9 +46,9 @@ class LeaderBoardActivity : Activity() {
             val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java,
                     "database-name").build()
 
-            if (db.scoreDao().getAll().isEmpty()) {
-                db.scoreDao().insertAll(Score(1, "Tomer Test", 1000))
-            }
+//            if (db.scoreDao().getAll().isEmpty()) {
+//                db.scoreDao().insertAll(Score(1, "Tomer Test", 1000))
+//            }
 
             scores = db.scoreDao().getAll().sortedByDescending { it.score }.toTypedArray()
             db.close()
