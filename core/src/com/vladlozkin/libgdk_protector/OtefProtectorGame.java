@@ -3,7 +3,6 @@ package com.vladlozkin.libgdk_protector;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -32,7 +31,7 @@ public class OtefProtectorGame {
     IEnemy enemy;
     IEnemy enemyFoCheckingOverlap;
 
-    private int score = 0;
+    private int m_score = 0;
     private int m_NumberOfEnemies;
     private int RENDER_LOOPS_AFTER_LAST_ENEMY = 20;
     private int renderCounter = 0;
@@ -46,8 +45,7 @@ public class OtefProtectorGame {
     private int m_MsForEnemyDispatch = 1500;
     private int m_MsInWaitingList = 1500;
 
-
-
+    private boolean m_showLoginScreen = true;
 
     Rectangle screenRectangel;
     SpriteBatch m_SpriteBatch;
@@ -86,6 +84,12 @@ public class OtefProtectorGame {
 
     public void RenderGame()
     {
+        if (m_showLoginScreen)
+        {
+            m_ActionResolver.ShowMainMenu();
+            m_showLoginScreen = false;
+        }
+
         m_Level.RenderBackground();
         renderEnemies();
         renderScore();
@@ -150,7 +154,7 @@ public class OtefProtectorGame {
                     itemsToRemoveAfterImpact.add(enemy);
                 }
             }
-            score += enemy.Score() * itemsToRemoveAfterImpact.size();
+            m_score += enemy.Score() * itemsToRemoveAfterImpact.size();
 //            m_EnemysToDraw.remove(enemyFoCheckingOverlap);
             m_EnemysToDraw.removeAll(itemsToRemoveAfterImpact);
 
@@ -230,23 +234,24 @@ public class OtefProtectorGame {
                 m_NumberOfEnemies = m_EnemysToDraw.size();
                 break;
             case 1:
+                m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new ExtinguisherTeacher(m_SpriteBatch);
                 m_EnemysToDraw = m_Level.InitLevel();
                 m_NumberOfEnemies = m_EnemysToDraw.size();
                 break;
             case 2:
+                m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelOne(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
                 m_NumberOfEnemies = m_EnemysWaitingList.size();
                 break;
-            case 3:
-                m_Level = new LevelTwo(m_SpriteBatch);
-                m_EnemysWaitingList = m_Level.InitLevel();
-                m_NumberOfEnemies = 1; //this will never stop
-                break;
+//            case 3:
+//                m_Level = new LevelTwo(m_SpriteBatch);
+//                m_EnemysWaitingList = m_Level.InitLevel();
+//                m_NumberOfEnemies = 1; //this will never stop
+//                break;
             default:
-                m_ActionResolver.ShowGameOver(score);
-//                new Exception("Level not created yet");
+                m_ActionResolver.ShowGameOver(m_score);
         }
     }
 
@@ -287,14 +292,23 @@ public class OtefProtectorGame {
         if (renderCounter == RENDER_LOOPS_AFTER_LAST_ENEMY)
         {
             renderCounter = 0;
-            m_CurrentLevel++;
+            if (m_CurrentLevel == 3)
+            {
+                m_CurrentLevel = 2; //skip the first 2 tutorial levels
+                m_showLoginScreen = true;
+                m_score = 0;
+            }
+            else
+            {
+                m_CurrentLevel++;
+            }
             setLevel(m_CurrentLevel);
         }
     }
 
     private void updateScore(int toAdd) {
-        this.score += toAdd;
-        scoreText.setText("Score: " + this.score);
+        this.m_score += toAdd;
+        scoreText.setText("Score: " + this.m_score);
     }
 
     private void startDispatchThreads()

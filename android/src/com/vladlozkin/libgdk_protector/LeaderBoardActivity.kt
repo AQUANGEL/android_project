@@ -32,8 +32,9 @@ class LeaderBoardActivity : Activity() {
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this, WelcomeActivity::class.java)
-        startActivity(intent)
+        finish()
+//        val intent = Intent(this, WelcomeActivity::class.java)
+//        startActivity(intent)
     }
 
     private fun loadScores() {

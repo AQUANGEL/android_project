@@ -50,17 +50,7 @@ public class Main implements ApplicationListener {
 		game = new OtefProtectorGame(actionResolver, spriteBatch);
 
 
-		if (showLoginScreen)
-		{
-			actionResolver.ShowMainMenu();
-//			new Thread(new Runnable() {
-//				@Override
-//				public void run() {
-//
-//				}
-//			}).start();;
-			showLoginScreen = false;
-		}
+
 		game.InitGame();
 
 		swiperInit();
