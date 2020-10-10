@@ -59,9 +59,12 @@ public class OtefProtectorGame {
     private Preferences PREFS;
     Sound extinguishSound = Gdx.audio.newSound(Gdx.files.internal("extinguishe.wav"));
 
+    private int life_points;
+
     private static final int FIRST_LEVEL = 2;
     private static final int LAST_LEVEL = 5;
     private static final int INTRO_LEVEL = 0;
+    private static final int INITIAL_LIFE_POINTS = 3;
 
     public OtefProtectorGame(IActionResolver actionResolver,  SpriteBatch spriteBatch )
     {
@@ -78,7 +81,7 @@ public class OtefProtectorGame {
         scoreTextStyle = new Label.LabelStyle();
         scoreTextStyle.font = scoreFont;
         PREFS = Gdx.app.getPreferences("Game_Prefs");
-
+        life_points = INITIAL_LIFE_POINTS;
         m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
     }
 
@@ -120,6 +123,8 @@ public class OtefProtectorGame {
                         enemy.ShowImpact();
                         enemy.setTouchedGround(true);
                         m_NumberOfEnemies--;
+                        life_points--;
+                        if (life_points <= 0) {  EndGame();  }
                     }
                     else if(!enemy.GetBound().overlaps(screenRectangel) && !screenRectangel.contains(enemy.GetBound()))
                     {
@@ -162,7 +167,7 @@ public class OtefProtectorGame {
                     itemsToRemoveAfterImpact.add(enemy);
                 }
             }
-            m_score += enemy.Score() * itemsToRemoveAfterImpact.size();
+//            m_score += enemy.Score() * itemsToRemoveAfterImpact.size();
 //            m_EnemysToDraw.remove(enemyFoCheckingOverlap);
             m_EnemysToDraw.removeAll(itemsToRemoveAfterImpact);
             extinguishSound.play(1f);
@@ -216,6 +221,7 @@ public class OtefProtectorGame {
                     {
                         enemy.ShowImpact();
                         enemy.OnHitSound();
+                        if (life_points < INITIAL_LIFE_POINTS) { life_points++; }
                     }
                     else
                     {
@@ -252,6 +258,7 @@ public class OtefProtectorGame {
                     PREFS.putBoolean("show_intro", false);
                     PREFS.flush();
                 }
+                life_points = INITIAL_LIFE_POINTS;
                 m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelOne(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
@@ -267,9 +274,12 @@ public class OtefProtectorGame {
                 m_EnemysWaitingList = m_Level.InitLevel();
                 break;
             default:
-                m_ActionResolver.ShowGameOver(m_score);
-
+                EndGame();
         }
+    }
+
+    private void EndGame() {
+        m_ActionResolver.ShowGameOver(m_score);
     }
 
     public boolean LevelFinished() {
