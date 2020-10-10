@@ -1,6 +1,7 @@
 package com.vladlozkin.libgdk_protector;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -39,7 +40,7 @@ public class OtefProtectorGame {
     private int RENDER_LOOPS_AFTER_LAST_ENEMY = 20;
     private int renderCounter = 0;
     private boolean m_IntroLevel = false;
-    private int m_CurrentLevel = 4;
+    private int m_CurrentLevel;
 
     Label scoreText;
     Label.LabelStyle scoreTextStyle;
@@ -55,7 +56,12 @@ public class OtefProtectorGame {
 
     IActionResolver m_ActionResolver;
 
+    private Preferences PREFS;
     Sound extinguishSound = Gdx.audio.newSound(Gdx.files.internal("extinguishe.wav"));
+
+    private static final int FIRST_LEVEL = 2;
+    private static final int LAST_LEVEL = 5;
+    private static final int INTRO_LEVEL = 0;
 
     public OtefProtectorGame(IActionResolver actionResolver,  SpriteBatch spriteBatch )
     {
@@ -71,6 +77,9 @@ public class OtefProtectorGame {
         scoreFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         scoreTextStyle = new Label.LabelStyle();
         scoreTextStyle.font = scoreFont;
+        PREFS = Gdx.app.getPreferences("Game_Prefs");
+
+        m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
     }
 
     public void InitGame()
@@ -227,7 +236,7 @@ public class OtefProtectorGame {
         m_EnemysWaitingList.clear();
 
         switch (level) {
-            case 0:
+            case INTRO_LEVEL:
                 m_IntroLevel = true;
                 m_Level = new PopTutorial(m_SpriteBatch);
                 m_EnemysToDraw = m_Level.InitLevel();
@@ -238,7 +247,11 @@ public class OtefProtectorGame {
                 m_Level = new ExtinguisherTeacher(m_SpriteBatch);
                 m_EnemysToDraw = m_Level.InitLevel();
                 break;
-            case 2:
+            case FIRST_LEVEL:
+                if (PREFS.getBoolean("show_intro", true)) {
+                    PREFS.putBoolean("show_intro", false);
+                    PREFS.flush();
+                }
                 m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelOne(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
@@ -255,6 +268,7 @@ public class OtefProtectorGame {
                 break;
             default:
                 m_ActionResolver.ShowGameOver(m_score);
+
         }
     }
 
@@ -288,9 +302,9 @@ public class OtefProtectorGame {
         if (renderCounter == RENDER_LOOPS_AFTER_LAST_ENEMY)
         {
             renderCounter = 0;
-            if (m_CurrentLevel == 5)
+            if (m_CurrentLevel == LAST_LEVEL)
             {
-                m_CurrentLevel = 2; //skip the first 2 tutorial levels
+                m_CurrentLevel = FIRST_LEVEL; //skip the first 2 tutorial levels
                 m_showLoginScreen = true;
                 m_score = 0;
             }
