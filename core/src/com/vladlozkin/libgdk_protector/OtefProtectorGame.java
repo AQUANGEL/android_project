@@ -248,7 +248,10 @@ public class OtefProtectorGame {
                 m_EnemysToDraw = m_Level.InitLevel();
                 break;
             case FIRST_LEVEL:
-                if (PREFS.getBoolean("show_intro", true)) {  PREFS.putBoolean("show_intro", false); }
+                if (PREFS.getBoolean("show_intro", true)) {
+                    PREFS.putBoolean("show_intro", false);
+                    PREFS.flush();
+                }
                 m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelOne(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
@@ -265,6 +268,7 @@ public class OtefProtectorGame {
                 break;
             default:
                 m_ActionResolver.ShowGameOver(m_score);
+
         }
     }
 
