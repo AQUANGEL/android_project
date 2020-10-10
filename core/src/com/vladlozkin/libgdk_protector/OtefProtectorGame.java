@@ -245,7 +245,7 @@ public class OtefProtectorGame {
                 m_NumberOfEnemies = 1; //this will never stop
                 break;
             default:
-                m_ActionResolver.ShowLeaderBoard(score);
+                m_ActionResolver.ShowGameOver(score);
 //                new Exception("Level not created yet");
         }
     }

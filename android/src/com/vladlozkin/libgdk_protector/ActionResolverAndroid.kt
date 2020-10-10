@@ -11,6 +11,7 @@ class ActionResolverAndroid(context: Context) : Activity(), IActionResolver {
     var m_context: Context
     private val MAIN_MENU_CODE = 1
     private val LEADER_BOARD_CODE = 2
+    private val GAME_OVER_CODE = 3
     override fun ShowMainMenu() {
         m_handler.post {
             val intent = Intent(m_context, WelcomeActivity::class.java)
@@ -28,6 +29,18 @@ class ActionResolverAndroid(context: Context) : Activity(), IActionResolver {
             intent.putExtra("score",score)
             if (m_context is Activity) {
                 (m_context as Activity).startActivityForResult(intent, LEADER_BOARD_CODE)
+            } else {
+                Log.e("ActionResolverError", "mContext should be an instanceof Activity.")
+            }
+        }
+    }
+
+    override fun ShowGameOver(score: Int) {
+        m_handler.post {
+            val intent = Intent(m_context, GameOverActivity::class.java)
+            intent.putExtra("score",score)
+            if (m_context is Activity) {
+                (m_context as Activity).startActivityForResult(intent, GAME_OVER_CODE)
             } else {
                 Log.e("ActionResolverError", "mContext should be an instanceof Activity.")
             }

@@ -2,6 +2,7 @@ package com.vladlozkin.libgdk_protector
 
 import android.app.Activity
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
@@ -15,7 +16,11 @@ class WelcomeActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.welcome_screen)
 
+        val mediaPlayer = MediaPlayer.create(this, R.raw.epicsaxguy);
+        mediaPlayer.start();
+
         startGame.setOnClickListener {
+            mediaPlayer.stop() // just in case
             val returnIntent = Intent()
             // I don't check the data of returned Intent, made it for future use if we will need it.
             // could of just write finish() and that is it.
@@ -26,6 +31,7 @@ class WelcomeActivity : Activity() {
         }
 
         leaderBoardBtn.setOnClickListener {
+            mediaPlayer.stop() // just in case
             val intent = Intent(this, LeaderBoardActivity::class.java)
             startActivity(intent)
         }
