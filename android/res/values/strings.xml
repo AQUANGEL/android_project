@@ -14,5 +14,6 @@
     <string name="save_score">Save Score</string>
     <string name="enter_name">Please enter your name</string>
     <string name="game_over" translatable="false">Game\nOver!</string>
+    <string name="get_ready_for_level">Get ready for level </string>
 
 </resources>
