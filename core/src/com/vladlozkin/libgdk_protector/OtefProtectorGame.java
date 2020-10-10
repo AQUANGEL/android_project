@@ -83,7 +83,7 @@ public class OtefProtectorGame {
 
         life_points = INITIAL_LIFE_POINTS;
         m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
-
+        m_CurrentLevel = 5;
     }
 
     public void InitGame()
@@ -283,8 +283,8 @@ public class OtefProtectorGame {
         m_ActionResolver.ShowGameOver(m_score);
         m_score = 0;
         scoreText.setText("Score: " + this.m_score);
-        m_ActionResolver.ShowGameOver(m_score);
-        setLevel(2);
+        m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
+        InitGame();
     }
 
     public boolean LevelFinished() {
