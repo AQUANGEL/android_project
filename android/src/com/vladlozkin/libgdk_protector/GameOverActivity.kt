@@ -23,6 +23,7 @@ class GameOverActivity : Activity() {
             mediaPlayer.stop() // just in case
             val score : Int = intent.getIntExtra("score", -9999)
             val intent = Intent(this, LeaderBoardActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtra("score",score)
             startActivity(intent)
             finish()
@@ -30,8 +31,6 @@ class GameOverActivity : Activity() {
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this, WelcomeActivity::class.java)
-        startActivity(intent)
-        finish()
+//        finish()
     }
 }
