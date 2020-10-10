@@ -92,7 +92,6 @@ public class OtefProtectorGame {
         m_Level.AdditionalRenderingIfNeeded();
     }
 
-
     private void renderEnemies()
     {
         boolean checkIfwaterBalloonHitFireNeeded = false;
@@ -246,7 +245,8 @@ public class OtefProtectorGame {
                 m_NumberOfEnemies = 1; //this will never stop
                 break;
             default:
-                new Exception("Level not created yet");
+                m_ActionResolver.ShowLeaderBoard(score);
+//                new Exception("Level not created yet");
         }
     }
 
@@ -278,7 +278,8 @@ public class OtefProtectorGame {
         }
 
         finilizeRenderingAndSetNextLevel();
-       //        m_ActionResolver.ShowLeaderBoard(score);
+
+//        m_ActionResolver.ShowLeaderBoard(score);
     }
 
     private void finilizeRenderingAndSetNextLevel() {
