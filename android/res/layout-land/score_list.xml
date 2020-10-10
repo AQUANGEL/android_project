@@ -9,7 +9,8 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layoutDirection="locale">
         <TextView
             android:id="@+id/rank"
             android:text="@string/rank"
