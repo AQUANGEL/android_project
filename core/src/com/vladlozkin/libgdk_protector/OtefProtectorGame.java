@@ -11,15 +11,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonExtinguisher;
+import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonLeftToRight;
+import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonRightToLeft;
 import com.vladlozkin.libgdk_protector.Levels.ExtinguisherTeacher;
 import com.vladlozkin.libgdk_protector.Levels.ILevel;
+import com.vladlozkin.libgdk_protector.Levels.LevelFour;
 import com.vladlozkin.libgdk_protector.Levels.LevelOne;
 import com.vladlozkin.libgdk_protector.Levels.LevelThree;
 import com.vladlozkin.libgdk_protector.Levels.LevelTwo;
 import com.vladlozkin.libgdk_protector.Levels.PopTutorial;
 import com.vladlozkin.libgdk_protector.MissileImpl.MissileDownTrajectory;
-import com.vladlozkin.libgdk_protector.MissileImpl.MissileUpTrajectory;
 
+import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.DefaultListSelectionModel;
@@ -64,9 +67,9 @@ public class OtefProtectorGame {
     private int life_points;
 
     private static final int FIRST_LEVEL = 2;
-    private static final int LAST_LEVEL = 5;
+    private static final int LAST_LEVEL = 6;
     private static final int INTRO_LEVEL = 0;
-    private static final int INITIAL_LIFE_POINTS = 3;
+    private static final int INITIAL_LIFE_POINTS = 5;
 
     public OtefProtectorGame(IActionResolver actionResolver,  SpriteBatch spriteBatch )
     {
@@ -276,7 +279,6 @@ public class OtefProtectorGame {
                 m_EnemysToDraw = m_Level.InitLevel();
                 break;
             case 1:
-                m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new ExtinguisherTeacher(m_SpriteBatch);
                 m_EnemysToDraw = m_Level.InitLevel();
                 break;
@@ -285,30 +287,39 @@ public class OtefProtectorGame {
                     PREFS.putBoolean("show_intro", false);
                     PREFS.flush();
                 }
-                m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelOne(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
                 break;
             case 3:
-                m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelTwo(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
                 break;
             case 4:
-                m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelThree(m_SpriteBatch);
+                m_EnemysToDraw = m_Level.InitLevel();
+                m_EnemysWaitingList.add(new BalloonExtinguisher());
+                m_EnemysWaitingList.add(new BalloonLeftToRight());
+                m_EnemysWaitingList.add(new BalloonRightToLeft());
+                Collections.shuffle(m_EnemysToDraw);
+                break;
+            case 5:
+                m_Level = new LevelFour(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
+                break;
+            case 6:
+                m_ActionResolver.ShowGameOver(m_score);
                 break;
             default:
                 EndGame();
+                break;
         }
     }
 
     private void EndGame() {
-        m_ActionResolver.ShowGameOver(m_score);
         m_score = 0;
         scoreText.setText("Score: " + this.m_score);
         m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
+//        m_showLoginScreen = true;
         InitGame();
     }
 
@@ -342,18 +353,17 @@ public class OtefProtectorGame {
         if (renderCounter == RENDER_LOOPS_AFTER_LAST_ENEMY)
         {
             renderCounter = 0;
-            if (m_CurrentLevel == LAST_LEVEL)
+            if (m_CurrentLevel >= LAST_LEVEL)
             {
-                m_CurrentLevel = FIRST_LEVEL; //skip the first 2 tutorial levels
-                m_showLoginScreen = true;
-                m_score = 0;
-                scoreText.setText("Score: " + this.m_score);
+                EndGame();
             }
             else
             {
                 m_CurrentLevel++;
+                setLevel(m_CurrentLevel);
+                if (m_CurrentLevel < LAST_LEVEL)
+                    m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel);
             }
-            setLevel(m_CurrentLevel);
         }
     }
 

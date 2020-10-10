@@ -5,16 +5,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.vladlozkin.libgdk_protector.Enemy;
 
-public class MissileDownTrajectory extends Enemy
+public class MissileDownTrajectoryLeftToRight extends Enemy
 {
-    float rotationDegree = 260;
+    float rotationDegree = 170;
     private float weight = 10;
     float velocityX = 4f;
     float velocityY = 7f;
 
     int m_damageCounter = 0;
 
-    public MissileDownTrajectory() {
+    public MissileDownTrajectoryLeftToRight() {
         super( Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), "missile.png");
         SetNewPosition();
         SetSpeed(4f, 4f);
@@ -26,17 +26,17 @@ public class MissileDownTrajectory extends Enemy
         if (CheckIfShouldMove())
         {
             float delta2 = rand.nextFloat() * 0.2f + 0.2f;
-            super.GetBound().x += velocityX * delta2 * xSpeed;
+            super.GetBound().x -= velocityX * delta2 * xSpeed;
             super.GetBound().y += velocityY * delta2 * ySpeed;
             velocityY = velocityY * delta2 + -2;
-            rotationDegree -= 0.01;
+            rotationDegree += 0.01;
         }
     }
 
     @Override
     public void Show()
     {
-        rotationDegree = 260;
+        rotationDegree = 195;
         super.shouldDraw = true;
     }
 
@@ -56,7 +56,7 @@ public class MissileDownTrajectory extends Enemy
     public void SetNewPosition() {
         float newX = rand.nextInt(Gdx.graphics.getWidth());
         float newY = Gdx.graphics.getHeight()*0.8f;
-        rotationDegree = 260;
+        rotationDegree = 195;
         velocityX = 4f;
         velocityY = 7f;
         bound.setCenter(newX, newY);
