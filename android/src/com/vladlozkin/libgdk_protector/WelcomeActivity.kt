@@ -4,23 +4,25 @@ import android.app.Activity
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Button
-
 import kotlinx.android.synthetic.main.welcome_screen.*
 
 class WelcomeActivity : Activity() {
+//    var introPlayer: MediaPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.welcome_screen)
 
-        val mediaPlayer = MediaPlayer.create(this, R.raw.epicsaxguy);
-        mediaPlayer.start();
+//        introPlayer = MediaPlayer.create(this, R.raw.epicsaxguy);
+//
+//        if (!introPlayer!!.isPlaying) {
+//            introPlayer!!.start()
+//            introPlayer!!.isLooping = true
+//        }
 
         startGame.setOnClickListener {
-            mediaPlayer.stop() // just in case
+//            introPlayer?.stop() // just in case
             val returnIntent = Intent()
             // I don't check the data of returned Intent, made it for future use if we will need it.
             // could of just write finish() and that is it.
@@ -31,7 +33,7 @@ class WelcomeActivity : Activity() {
         }
 
         leaderBoardBtn.setOnClickListener {
-            mediaPlayer.stop() // just in case
+//            introPlayer?.stop() // just in case
             val intent = Intent(this, LeaderBoardActivity::class.java)
             startActivity(intent)
         }
@@ -44,4 +46,37 @@ class WelcomeActivity : Activity() {
     }
 
     override fun onBackPressed() {}
+
+    override fun onResume() {
+
+        // starting the player if it is not playing
+//        if (!introPlayer!!.isPlaying) {
+//            introPlayer!!.start()
+//            introPlayer!!.isLooping = true
+//        }
+
+        super.onResume()
+    }
+
+    override fun onStart() {
+        // starting the player if it is not playing
+//        if (!introPlayer!!.isPlaying) {
+//            introPlayer!!.start()
+//            introPlayer!!.isLooping = true
+//        }
+
+        super.onStart()
+    }
+
+    override fun onPause() {
+//        introPlayer?.stop()
+
+        super.onPause()
+    }
+
+    override fun onStop() {
+//        introPlayer?.stop()
+
+        super.onStop()
+    }
 }

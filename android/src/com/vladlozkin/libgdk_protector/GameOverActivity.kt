@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.game_over.*
 
 class GameOverActivity : Activity() {
@@ -15,10 +16,13 @@ class GameOverActivity : Activity() {
         val mediaPlayer = MediaPlayer.create(this, R.raw.game_over_mario);
         mediaPlayer.start();
 
+        val animation = AnimationUtils.loadAnimation(this, R.anim.game_over_animation)
+        gameOverText.startAnimation(animation)
+
         game_over_layout.setOnClickListener {
             mediaPlayer.stop() // just in case
-            val intent = Intent(this, LeaderBoardActivity::class.java)
             val score : Int = intent.getIntExtra("score", -9999)
+            val intent = Intent(this, LeaderBoardActivity::class.java)
             intent.putExtra("score",score)
             startActivity(intent)
         }
