@@ -36,6 +36,7 @@ class WelcomeActivity : Activity() {
 //            introPlayer?.stop() // just in case
             val intent = Intent(this, LeaderBoardActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         val animation = AnimationUtils.loadAnimation(this, R.anim.balloon_animation)
@@ -45,7 +46,9 @@ class WelcomeActivity : Activity() {
         balloonSet4.startAnimation(animation)
     }
 
-    override fun onBackPressed() {}
+    override fun onBackPressed() {
+
+    }
 
     override fun onResume() {
 

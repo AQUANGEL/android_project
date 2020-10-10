@@ -25,6 +25,13 @@ class GameOverActivity : Activity() {
             val intent = Intent(this, LeaderBoardActivity::class.java)
             intent.putExtra("score",score)
             startActivity(intent)
+            finish()
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, WelcomeActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
