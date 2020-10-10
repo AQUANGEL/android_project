@@ -18,7 +18,7 @@ class BetweenLevelsScreen : Activity() {
         setContentView(R.layout.between_levels_layout)
 
         val level = intent.getIntExtra("level", 0)
-        finishedLevlel.text = finishedLevlel.text.toString() + level.toString()
+        finishedLevlel.text = finishedLevlel.text.toString() + " " + level.toString()
 
     }
 

@@ -11,9 +11,8 @@ import java.util.Random;
 public class BalloonExtinguisher extends Enemy {
 
     Texture waterTexture;
-    private final float FIRST_LEVEL_MAX_DELTA = 0.1f;
     private float weight = 10;
-
+    int m_damageCounter = 0;
 
 
     public BalloonExtinguisher()
@@ -57,6 +56,16 @@ public class BalloonExtinguisher extends Enemy {
     public int Score()
     {
         return 0;
+    }
+
+    public boolean Destroyed()
+    {
+        return m_damageCounter == 30;
+    }
+
+    public void AddDamage()
+    {
+        m_damageCounter++;
     }
 
 }

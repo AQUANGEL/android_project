@@ -12,6 +12,8 @@ public class MissileDownTrajectory extends Enemy
     float velocityX = 4f;
     float velocityY = 7f;
 
+    int m_damageCounter = 0;
+
     public MissileDownTrajectory() {
         super( Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), "missile.png");
         SetNewPosition();
@@ -58,6 +60,18 @@ public class MissileDownTrajectory extends Enemy
         velocityX = 4f;
         velocityY = 7f;
         bound.setCenter(newX, newY);
+    }
+
+    public int Score() { return 40; }
+
+    public boolean Destroyed()
+    {
+        return m_damageCounter == 60;
+    }
+
+    public void AddDamage()
+    {
+        m_damageCounter++;
     }
 }
 

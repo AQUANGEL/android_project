@@ -23,7 +23,6 @@ public class LevelThree implements ILevel {
         m_SpriteBatch = spriteBatch;
         backgroundTexture = new Texture("farmResized.png");
         backgroundSprite = new Sprite(backgroundTexture);
-
     }
 
     @Override

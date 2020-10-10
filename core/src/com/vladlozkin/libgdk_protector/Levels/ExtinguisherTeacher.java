@@ -34,7 +34,7 @@ public class ExtinguisherTeacher implements ILevel {
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         textStyle = new Label.LabelStyle();
         textStyle.font = font;
-        extinguisherText = new Label("POP the balloon\nto extinguish fires", textStyle);
+        extinguisherText = new Label("Swipe the balloon until it pops\nto extinguish fires\n ", textStyle);
         extinguisherText.setColor(Color.ROYAL);
         extinguisherText.setFontScale(4f,4f);
         extinguisherText.setBounds(150, Gdx.graphics.getHeight()/2,200,100);

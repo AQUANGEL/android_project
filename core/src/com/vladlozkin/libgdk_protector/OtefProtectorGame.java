@@ -17,8 +17,12 @@ import com.vladlozkin.libgdk_protector.Levels.LevelOne;
 import com.vladlozkin.libgdk_protector.Levels.LevelThree;
 import com.vladlozkin.libgdk_protector.Levels.LevelTwo;
 import com.vladlozkin.libgdk_protector.Levels.PopTutorial;
+import com.vladlozkin.libgdk_protector.MissileImpl.MissileDownTrajectory;
+import com.vladlozkin.libgdk_protector.MissileImpl.MissileUpTrajectory;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.swing.DefaultListSelectionModel;
 
 public class OtefProtectorGame {
 
@@ -35,7 +39,6 @@ public class OtefProtectorGame {
     IEnemy enemyFoCheckingOverlap;
 
     private int m_score = 0;
-    private int m_NumberOfEnemies;
     private int RENDER_LOOPS_AFTER_LAST_ENEMY = 20;
     private int renderCounter = 0;
     private boolean m_IntroLevel = false;
@@ -46,7 +49,7 @@ public class OtefProtectorGame {
     BitmapFont scoreFont;
 
     private int m_MsForEnemyDispatch = 1500;
-    private int m_MsInWaitingList = 1500;
+    private int m_MsInWaitingList = 1000;
 
     private boolean m_showLoginScreen = true;
 
@@ -83,6 +86,7 @@ public class OtefProtectorGame {
 
         life_points = INITIAL_LIFE_POINTS;
         m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
+        m_CurrentLevel = 0;
     }
 
     public void InitGame()
@@ -122,7 +126,6 @@ public class OtefProtectorGame {
                     if(enemy.GetBound().y < screenRectangel.y ) {
                         enemy.ShowImpact();
                         enemy.setTouchedGround(true);
-                        m_NumberOfEnemies--;
                         life_points--;
                         if (life_points <= 0) {  EndGame();  }
                     }
@@ -152,7 +155,6 @@ public class OtefProtectorGame {
                 enemy.Draw(m_SpriteBatch);
             }
         }
-
 
 
         if(checkIfwaterBalloonHitFireNeeded)
@@ -211,23 +213,49 @@ public class OtefProtectorGame {
             }
         }
 
+        MissileDownTrajectory missile;
+        BalloonExtinguisher extinguisher;
+
         for(Object enemyIter : m_EnemysToDraw)
         {
             enemy = (IEnemy) enemyIter;
             for(Vector2 point : swipePath)
             {
                 if(enemy.GetBound().contains(point.x,point.y) && !enemy.TouchedGround()){
-                    if (enemy instanceof BalloonExtinguisher)
+                    if (enemy instanceof BalloonExtinguisher )
                     {
-                        enemy.ShowImpact();
-                        enemy.OnHitSound();
-                        if (life_points < INITIAL_LIFE_POINTS) { life_points++; }
+                        extinguisher = (BalloonExtinguisher) enemy;
+                        if(extinguisher.Destroyed())
+                        {
+                            enemy.ShowImpact();
+                            if (life_points < INITIAL_LIFE_POINTS) { life_points++; }
+                        }
+                        else
+                        {
+                            extinguisher.AddDamage();
+                            enemy.OnHitSound();
+                        }
+                    }
+                    else if (enemy instanceof MissileDownTrajectory)
+                    {
+                        missile = (MissileDownTrajectory) enemy;
+
+                        if(missile.Destroyed())
+                        {
+                            m_EnemysToDraw.remove(enemy);
+                            updateScore(enemy.Score());
+                        }
+                        else
+                        {
+                            missile.AddDamage();
+                            enemy.OnHitSound();
+                        }
                     }
                     else
                     {
                         enemy.OnHitSound();
+
                         m_EnemysToDraw.remove(enemy);
-                        m_NumberOfEnemies--;
                         updateScore(enemy.Score());
                     }
                     break;
@@ -246,7 +274,6 @@ public class OtefProtectorGame {
                 m_IntroLevel = true;
                 m_Level = new PopTutorial(m_SpriteBatch);
                 m_EnemysToDraw = m_Level.InitLevel();
-                m_NumberOfEnemies = m_EnemysToDraw.size();
                 break;
             case 1:
                 m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
@@ -368,7 +395,7 @@ public class OtefProtectorGame {
                     try {
                         itemsToRemove.clear();
                         for (Object iter : m_EnemysToDraw) {
-                            Thread.sleep(1000);
+                            Thread.sleep(m_MsInWaitingList);
                             enemyInToDrawList = (IEnemy) iter;
                             if (enemyInToDrawList.Visible() == false && !enemyInToDrawList.TouchedGround()) {
                                 m_EnemysWaitingList.add(enemyInToDrawList);
