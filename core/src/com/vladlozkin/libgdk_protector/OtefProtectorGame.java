@@ -126,7 +126,7 @@ public class OtefProtectorGame {
                         enemy.ShowImpact();
                         enemy.setTouchedGround(true);
                         life_points--;
-                        if (life_points <= 0) {  EndGame();  }
+                        if (life_points <= 0 && m_CurrentLevel >= FIRST_LEVEL) { EndGame();  }
                     }
                     else if(!enemy.GetBound().overlaps(screenRectangel) && !screenRectangel.contains(enemy.GetBound()))
                     {
@@ -267,6 +267,7 @@ public class OtefProtectorGame {
     {
         m_EnemysToDraw.clear();
         m_EnemysWaitingList.clear();
+        life_points = INITIAL_LIFE_POINTS;
 
         switch (level) {
             case INTRO_LEVEL:
@@ -284,7 +285,6 @@ public class OtefProtectorGame {
                     PREFS.putBoolean("show_intro", false);
                     PREFS.flush();
                 }
-                life_points = INITIAL_LIFE_POINTS;
                 m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelOne(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
