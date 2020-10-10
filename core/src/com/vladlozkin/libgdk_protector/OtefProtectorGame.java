@@ -1,6 +1,7 @@
 package com.vladlozkin.libgdk_protector;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,7 +37,7 @@ public class OtefProtectorGame {
     private int RENDER_LOOPS_AFTER_LAST_ENEMY = 20;
     private int renderCounter = 0;
     private boolean m_IntroLevel = false;
-    private int m_CurrentLevel = 0;
+    private int m_CurrentLevel;
 
     Label scoreText;
     Label.LabelStyle scoreTextStyle;
@@ -51,6 +52,8 @@ public class OtefProtectorGame {
     SpriteBatch m_SpriteBatch;
 
     IActionResolver m_ActionResolver;
+
+    private Preferences PREFS;
 
     public OtefProtectorGame(IActionResolver actionResolver,  SpriteBatch spriteBatch )
     {
@@ -70,6 +73,9 @@ public class OtefProtectorGame {
         scoreFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         scoreTextStyle = new Label.LabelStyle();
         scoreTextStyle.font = scoreFont;
+        PREFS = Gdx.app.getPreferences("Game_Prefs");
+
+        m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? 0 : 3 ;
     }
 
     public void InitGame()
@@ -292,7 +298,7 @@ public class OtefProtectorGame {
         if (renderCounter == RENDER_LOOPS_AFTER_LAST_ENEMY)
         {
             renderCounter = 0;
-            if (m_CurrentLevel == 3)
+            if (m_CurrentLevel == 3 )
             {
                 m_CurrentLevel = 2; //skip the first 2 tutorial levels
                 m_showLoginScreen = true;
