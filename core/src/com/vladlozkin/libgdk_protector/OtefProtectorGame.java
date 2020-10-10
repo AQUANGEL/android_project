@@ -86,7 +86,6 @@ public class OtefProtectorGame {
 
         life_points = INITIAL_LIFE_POINTS;
         m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
-        m_CurrentLevel = 0;
     }
 
     public void InitGame()
