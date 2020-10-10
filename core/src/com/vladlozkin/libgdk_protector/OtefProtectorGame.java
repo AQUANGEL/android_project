@@ -17,7 +17,6 @@ import com.vladlozkin.libgdk_protector.Levels.LevelOne;
 import com.vladlozkin.libgdk_protector.Levels.LevelThree;
 import com.vladlozkin.libgdk_protector.Levels.LevelTwo;
 import com.vladlozkin.libgdk_protector.Levels.PopTutorial;
-import com.vladlozkin.libgdk_protector.MissileImpl.MissileDownTrajectory;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -79,7 +78,8 @@ public class OtefProtectorGame {
         scoreTextStyle.font = scoreFont;
         PREFS = Gdx.app.getPreferences("Game_Prefs");
 
-        m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
+//        m_CurrentLevel = PREFS.getBoolean("show_intro", true) ? INTRO_LEVEL : FIRST_LEVEL ;
+        m_CurrentLevel = 4;
     }
 
     public void InitGame()
@@ -267,7 +267,11 @@ public class OtefProtectorGame {
                 m_EnemysWaitingList = m_Level.InitLevel();
                 break;
             default:
+                m_score = 0;
+                scoreText.setText("Score: " + this.m_score);
                 m_ActionResolver.ShowGameOver(m_score);
+                setLevel(2);
+                break;
 
         }
     }
@@ -307,6 +311,7 @@ public class OtefProtectorGame {
                 m_CurrentLevel = FIRST_LEVEL; //skip the first 2 tutorial levels
                 m_showLoginScreen = true;
                 m_score = 0;
+                scoreText.setText("Score: " + this.m_score);
             }
             else
             {
