@@ -29,17 +29,17 @@ public class LevelOne implements ILevel {
     public CopyOnWriteArrayList<IEnemy> InitLevel() {
         CopyOnWriteArrayList enemies = new CopyOnWriteArrayList<IEnemy>();
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 3; i++)
         {
             enemies.add(new BalloonRightToLeft());
         }
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 3; i++)
         {
             enemies.add(new BalloonLeftToRight());
         }
 
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 1; i++)
         {
             enemies.add(new BalloonExtinguisher());
         }

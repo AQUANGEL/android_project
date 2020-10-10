@@ -30,11 +30,7 @@ class BetweenLevelsScreen : Activity() {
         }
     }
 
-
-
     override fun onBackPressed() {
-        val intent = Intent(this, WelcomeActivity::class.java)
-        startActivity(intent)
         finish()
     }
 

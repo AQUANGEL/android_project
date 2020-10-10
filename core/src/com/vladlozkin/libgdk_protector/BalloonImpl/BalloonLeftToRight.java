@@ -20,9 +20,8 @@ public class BalloonLeftToRight extends Enemy {
     public void Move(float delta) {
         if (CheckIfShouldMove())
         {
-//            float delta = rand.nextFloat() * delta + 0.2f;
-            super.GetBound().x -= weight*(delta*2  + 0.2f);
-            super.GetBound().y -= weight*(delta/2 + 0.1f);
+            super.GetBound().x -= weight*(delta*2  + xSpeed);
+            super.GetBound().y -= weight*(delta/2 + ySpeed);
         }
     }
 
@@ -39,4 +38,8 @@ public class BalloonLeftToRight extends Enemy {
         bound.setCenter(newX, groundY);
     }
 
+    @Override
+    public void SetSpeed(float xSpeed, float ySpeed) {
+        super.SetSpeed(xSpeed, ySpeed);
+    }
 }
