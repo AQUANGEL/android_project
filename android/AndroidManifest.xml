@@ -27,6 +27,10 @@
             android:name="com.vladlozkin.libgdk_protector.LeaderBoardActivity"
             android:screenOrientation="landscape">
         </activity>
+        <activity
+            android:name="com.vladlozkin.libgdk_protector.BetweenLevelsScreen"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

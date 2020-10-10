@@ -34,6 +34,19 @@ class ActionResolverAndroid(context: Context) : Activity(), IActionResolver {
         }
     }
 
+    override fun ShowBetweenLelvelsScreen(level: Int) {
+        m_handler.post {
+            val intent = Intent(m_context, BetweenLevelsScreen::class.java)
+            intent.putExtra("level",level)
+            if (m_context is Activity) {
+                (m_context as Activity).startActivity(intent)
+
+            } else {
+                Log.e("ActionResolverError", "mContext should be an instanceof Activity.")
+            }
+        }
+    }
+
     init {
         m_handler = Handler()
         m_context = context
