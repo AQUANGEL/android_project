@@ -9,20 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-
-import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonExtinguisher;
-import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonStationary;
-import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonLeftToRight;
-import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonRightToLeft;
 
 
 public class Main implements ApplicationListener {
@@ -33,8 +20,6 @@ public class Main implements ApplicationListener {
 	SwipeTriStrip tris;
 	SpriteBatch spriteBatch;
 	IActionResolver actionResolver;
-
-	public static boolean showLoginScreen = true;
 
 	OtefProtectorGame game;
 
@@ -48,8 +33,6 @@ public class Main implements ApplicationListener {
 	public void create() {
 		spriteBatch = new SpriteBatch();
 		game = new OtefProtectorGame(actionResolver, spriteBatch);
-
-
 
 		game.InitGame();
 
@@ -79,9 +62,7 @@ public class Main implements ApplicationListener {
 		if(game.LevelFinished())
 		{
 			game.HandleLevelFinished();
-//			dispose();
 		}
-
 	}
 
 	private void swiperInit()
@@ -111,12 +92,9 @@ public class Main implements ApplicationListener {
 	{
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
-
 		swipeTexture.bind();
-
 		//generate the triangle strip from our path
 		tris.update(swipe.path());
-
 		//render the triangles to the screen
 		tris.draw(cam);
 	}

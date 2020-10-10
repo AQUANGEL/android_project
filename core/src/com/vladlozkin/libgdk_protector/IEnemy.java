@@ -15,6 +15,6 @@ public interface IEnemy {
     void setTouchedGround(boolean touchedGround);
     Rectangle GetBound();
     int Score();
-
-    boolean ShouldDraw();
+    void SetSpeed(float xSpeed, float ySpeed);
+    void OnHitSound();
 }

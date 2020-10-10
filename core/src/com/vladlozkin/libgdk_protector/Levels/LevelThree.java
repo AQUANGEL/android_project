@@ -7,18 +7,19 @@ import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonExtinguisher;
 import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonLeftToRight;
 import com.vladlozkin.libgdk_protector.BalloonImpl.BalloonRightToLeft;
 import com.vladlozkin.libgdk_protector.IEnemy;
-import com.vladlozkin.libgdk_protector.Levels.ILevel;
+import com.vladlozkin.libgdk_protector.MissileImpl.MissileDownTrajectory;
+import com.vladlozkin.libgdk_protector.MissileImpl.MissileUpTrajectory;
 
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class LevelTwo implements ILevel {
+public class LevelThree implements ILevel {
 
     Texture backgroundTexture;
     Sprite backgroundSprite;
     SpriteBatch m_SpriteBatch;
 
-    public LevelTwo(SpriteBatch spriteBatch) {
+    public LevelThree(SpriteBatch spriteBatch) {
         m_SpriteBatch = spriteBatch;
         backgroundTexture = new Texture("farmResized.png");
         backgroundSprite = new Sprite(backgroundTexture);
@@ -30,24 +31,29 @@ public class LevelTwo implements ILevel {
         CopyOnWriteArrayList enemise = new CopyOnWriteArrayList<IEnemy>();
         IEnemy balloon;
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 3; i++)
         {
             balloon = new BalloonRightToLeft();
             balloon.SetSpeed(0.4f, 0.2f);
             enemise.add(balloon);
         }
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 3; i++)
         {
             balloon = new BalloonLeftToRight();
             balloon.SetSpeed(0.4f, 0.2f);
             enemise.add(balloon);
         }
 
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 1; i++)
         {
             enemise.add(new BalloonExtinguisher());
         }
+
+        enemise.add(new MissileDownTrajectory());
+        enemise.add(new MissileDownTrajectory());
+        enemise.add(new MissileDownTrajectory());
+
 
         Collections.shuffle(enemise);
 
@@ -64,3 +70,5 @@ public class LevelTwo implements ILevel {
 
     }
 }
+
+

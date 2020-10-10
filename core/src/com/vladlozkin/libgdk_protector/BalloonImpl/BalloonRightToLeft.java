@@ -8,6 +8,7 @@ import java.util.Random;
 public class BalloonRightToLeft extends Enemy {
 
     private float weight = 10;
+
     Random rand = new Random();
 
     public BalloonRightToLeft() {
@@ -19,8 +20,8 @@ public class BalloonRightToLeft extends Enemy {
     {
         if (CheckIfShouldMove())
         {
-            super.GetBound().x += weight*(delta*2 + 0.3f);
-            super.GetBound().y -= weight*(delta/2 + 0.1f);
+            super.GetBound().x += weight*(delta*2 + xSpeed);
+            super.GetBound().y -= weight*(delta/2 + ySpeed);
         }
     }
 
@@ -35,5 +36,10 @@ public class BalloonRightToLeft extends Enemy {
     {
         float newX = rand.nextInt(Gdx.graphics.getWidth());
         bound.setCenter(newX, groundY);
+    }
+
+    @Override
+    public void SetSpeed(float xSpeed, float ySpeed) {
+        super.SetSpeed(xSpeed, ySpeed);
     }
 }

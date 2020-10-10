@@ -1,6 +1,7 @@
 package com.vladlozkin.libgdk_protector;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,16 +10,20 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
 
 public class Enemy implements IEnemy {
-    protected Random rand = new Random(100);
+    protected Random rand = new Random();
     protected Rectangle bound;
     protected Texture texture;
     protected TextureRegion textureRegion;
     private Texture textureOnImpactWithGround;
+    Sound sound = Gdx.audio.newSound(Gdx.files.internal("pop2.wav"));
+
 
 
     protected boolean shouldDraw = true;
     protected Rectangle screenRectangel;
     public boolean touchedGround = false;
+    protected float xSpeed = 0.3f;
+    protected float ySpeed = 0.1f;
 
     public Enemy(float x, float y, String internalPathToEnemyImage){
         texture = new Texture(Gdx.files.internal(internalPathToEnemyImage));
@@ -90,4 +95,14 @@ public class Enemy implements IEnemy {
 
     public boolean ShouldDraw() { return this.shouldDraw; }
 
+    @Override
+    public void SetSpeed(float xSpeed, float ySpeed) {
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
+    }
+
+    public void OnHitSound()
+    {
+        sound.play(0.3f);
+    }
 }

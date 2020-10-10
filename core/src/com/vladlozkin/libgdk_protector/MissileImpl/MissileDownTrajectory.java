@@ -4,32 +4,30 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.vladlozkin.libgdk_protector.Enemy;
-import com.vladlozkin.libgdk_protector.IEnemy;
 
-public class MissileDownTrajectory extends Enemy implements IEnemy
+public class MissileDownTrajectory extends Enemy
 {
     float rotationDegree = 260;
     private float weight = 10;
-    protected TextureRegion textureRegion;
     float velocityX = 4f;
     float velocityY = 7f;
 
     public MissileDownTrajectory() {
         super( Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), "missile.png");
-        textureRegion = new TextureRegion(texture);
+        SetNewPosition();
+        SetSpeed(2f, 2f);
     }
 
     @Override
     public void Move(float delta) {
-//        float delta = rand.nextFloat() * 0.2f + 0.2f;
-        super.GetBound().x += velocityX * delta*2;
-        super.GetBound().y += velocityY * delta*2;
-        velocityY = velocityY * delta + -2;
-        rotationDegree -= 0.05;
 
-        if (!super.getScreenRectangel().contains( super.GetBound()))
+        if (CheckIfShouldMove())
         {
-            super.Hide();
+            float delta2 = rand.nextFloat() * 0.2f + 0.2f;
+            super.GetBound().x += velocityX * delta2 * xSpeed;
+            super.GetBound().y += velocityY * delta2 * ySpeed;
+            velocityY = velocityY * delta2 + -2;
+            rotationDegree -= 0.01;
         }
     }
 
@@ -43,13 +41,19 @@ public class MissileDownTrajectory extends Enemy implements IEnemy
     @Override
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.draw(textureRegion, bound.x, bound.y, bound.getWidth()/2, bound.getHeight()/2, texture.getWidth(), texture.getHeight(), 0.5f,0.5f, rotationDegree);
+        if (!TouchedGround())
+        {
+            spriteBatch.draw(textureRegion, bound.x, bound.y, bound.getWidth(), bound.getHeight(), texture.getWidth(), texture.getHeight(), 0.5f,0.5f, rotationDegree);
+        }
+        else {
+            spriteBatch.draw(textureRegion, bound.x, bound.y, bound.getWidth(), bound.getHeight(), texture.getWidth(), texture.getHeight(), 1f,1f, 0);
+        }
     }
 
     @Override
     public void SetNewPosition() {
         float newX = rand.nextInt(Gdx.graphics.getWidth());
-        float newY = Gdx.graphics.getHeight() - bound.y;
+        float newY = Gdx.graphics.getHeight();
         rotationDegree = 260;
         velocityX = 4f;
         velocityY = 7f;
