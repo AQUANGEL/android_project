@@ -234,13 +234,13 @@ public class OtefProtectorGame {
                 m_NumberOfEnemies = m_EnemysToDraw.size();
                 break;
             case 1:
-                m_ActionResolver.ShowBetweenLelvelsScreen(m_CurrentLevel-1);
+                m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new ExtinguisherTeacher(m_SpriteBatch);
                 m_EnemysToDraw = m_Level.InitLevel();
                 m_NumberOfEnemies = m_EnemysToDraw.size();
                 break;
             case 2:
-                m_ActionResolver.ShowBetweenLelvelsScreen(m_CurrentLevel-1);
+                m_ActionResolver.ShowBetweenLevelsScreen(m_CurrentLevel-1);
                 m_Level = new LevelOne(m_SpriteBatch);
                 m_EnemysWaitingList = m_Level.InitLevel();
                 m_NumberOfEnemies = m_EnemysWaitingList.size();
@@ -251,7 +251,7 @@ public class OtefProtectorGame {
 //                m_NumberOfEnemies = 1; //this will never stop
 //                break;
             default:
-                m_ActionResolver.ShowLeaderBoard(m_score);
+                m_ActionResolver.ShowGameOver(m_score);
         }
     }
 
